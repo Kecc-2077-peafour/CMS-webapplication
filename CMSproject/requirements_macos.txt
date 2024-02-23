@@ -1,0 +1,27 @@
+asgiref==3.7.2
+Django==5.0.1
+PyMySQL==1.0.2
+numpy==1.26.3
+pandas==2.2.0
+pillow==10.2.0
+python-dateutil==2.8.2
+pytz==2023.3.post1
+six==1.16.0
+sqlparse==0.4.4
+tzdata==2023.4
+#(venv) PS D:\this\session\minorProject\CMSproject> python manage.py shell
+# Python 3.12.1 (tags/v3.12.1:2305ca5, Dec  7 2023, 22:03:25) [MSC v.1937 64 bit (AMD64)] on win32
+# Type "help", "copyright", "credits" or "license" for more information.
+# (InteractiveConsole)
+# >>> from core.models import CustomUser
+# >>> CustomUser.objects.create_superuser(email='admin@gmail.com',password='admin/',usertype='admin')
+# <CustomUser: admin@gmail.com>
+# >>> admin_user=CustomUser.objects.get(email='admin@gmail.com')
+# >>> admin_user.is_staff = True
+# >>>admin_user.is_superuser = True
+# >>> admin_user.save()
+# >>> print(admin_user.is_staff)     
+# True
+# >>> print(admin_user.is_superuser)
+# True
+# exit()

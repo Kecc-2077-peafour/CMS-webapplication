@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Management System</title>
+    <!-- Include Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <picture class="logoContainer">
+            <img src="/media/collegeLogo.png" alt="logo">
+        </picture>
+        {% comment %} <div class="searchContainer">
+            <input type="text" placeholder="Search...">
+            <button class="search_button">
+            </button>
+        </div> {% endcomment %}
+        <div class="userProfileContainer" onclick="showProfileOptions()">
+            <img src="{{ admin_instance.profile_picture.url }}" alt="profilePic" class="profilePic">
+            <div class="fullName" style="font-size: 1.2rem;">{{ admin_instance.name }}</div>
+            <div class="profileOptions">
+                <ul>
+                    <li>
+                        <a href="#">Account</a>
+                    </li>
+                    <li>
+                        <a href="#">Settings</a>
+                    </li>
+                    <li>
+                        <a href="#">Privacy</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <aside class="aside">
+        <ul class="pageLinks">
+            <li class="pageLink">
+                <a href="{% url 'examsection_view' %}">Home</a>
+            </li>
+            <li class="pageLink">
+                <a onclick="handleOptionClick('studnet_analysis')">Student Analysis</a>
+            </li>
+            <li class="pageLink">
+                <a onclick="handleOptionClick('course_Info')">Course Info </a>
+            </li>
+            <li class="pageLink">
+                <a onclick="handleOptionClick('add_result')">Add Results </a>
+            </li>
+            <li class="pageLink">
+                <a onclick="handleOptionClick('view_result')">View Results</a>
+            </li>
+        
+        </ul>
+    
+    </aside>
+    <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div>
+
+    <!-- Modal -->
+    <div id="filterModal" class="modal">
+        <div class="modal-content">
+            <h2></h2>
+            <form id="filterForm">
+                {% csrf_token %}
+                <label for="faculty">Select Faculty:</label>
+                <select id="faculty" name="faculty">
+                    <option value="Computer">Computer</option>
+                    <option value="Civil">Civil</option>
+                    <option value="Architecture">Architecture</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Electronics">Electronics</option>
+                </select>
+
+                <label for="semester">Select Semester:</label>
+                <select id="semester" name="semester">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+                <label for="type">Exam Type</label>
+                <select id="type" name="type">
+                    <option value="Regular">Regular</option>
+                    <option value="Back">Back</option>
+                </select>
+
+                <div class="batch-input">
+                    <label for="batchNumber">Enter Batch:</label>
+                    <input type="number" id="batchNumber" name="batchNumber" min="1998" step="1">
+                </div>
+
+                <div class="button-container">
+                    <button id="goButton" type="button" onclick="applyFilters()">Go</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Another Modal for Courses -->
+    <div id="filter" onclick="openCourseModal()">🔍 Filter</div>
+<div id="courseModal" class="modal">
+    <div class="modal-content">
+        <h2>Course Information</h2>
+        <form method="POST" id="courseForm">
+            {% csrf_token %}
+            <label for="courseFaculty">Select Faculty:</label>
+            <select id="courseFaculty" name="courseFaculty">
+                <option value="Computer">Computer</option>
+                <option value="Civil">Civil</option>
+                <option value="Architecture">Architecture</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Electronics">Electronics</option>
+            </select>
+
+            <label for="courseSemester">Select Semester:</label>
+            <select id="courseSemester" name="courseSemester">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+            </select>
+
+            <div class="button-container">
+                <button id="goButton" type="button" onclick="applyFilters()">Go</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        var addResultUrl = "{% url 'handle_add_result_submission' %}";
+        var viewResultUrl = "{% url 'handle_view_result_submission' %}";
+        var courseInfoUrl = "{% url 'handle_course_Info_submission' %}";
+        {% comment %} var studentAnalysisUrl = "{% url 'handle_student_analysis_submission' %}"; {% endcomment %}
+    </script>
+    <script src="{% static 'examsection/js/exam.js' %}"></script>
+</body>
+</html>
+  

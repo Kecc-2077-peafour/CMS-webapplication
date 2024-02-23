@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Result</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/view.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <picture class="logoContainer">
+            <img src="/media/collegeLogo.png" alt="logo">
+        </picture>
+        {% comment %} <input type="text" class="searchInput" placeholder="Search..." onkeyup="search()"> {% endcomment %}
+        <div class="userProfileContainer" onclick="showProfileOptions()">
+            <img src="{{ admin_instance.profile_picture.url }}" alt="profilePic" class="profilePic">
+            <div class="fullName" style="font-size: 1.2rem;">{{ admin_instance.name }} </div>
+            <div class="profileOptions">
+                <ul>
+                    <li>
+                        <a href="#">Account</a>
+                    </li>
+                    <li>
+                        <a href="#">Settings</a>
+                    </li>
+                    <li>
+                        <a href="#">Privacy</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <aside class="aside">
+        <ul class="pageLinks">
+            <li class="pageLink">
+                <a href="{% url 'examsection_view' %}">Home</a>
+            </li>
+            <li class="pageLink">
+                <a onclick="handleOptionClick('studnet_analysis')">Student Analysis</a>
+            </li>
+            <li class="pageLink">
+                <a onclick="handleOptionClick('course_Info')">Course Info</a>
+            </li>
+            <li class="pageLink">
+                <a onclick="handleOptionClick('add_result')">Add Results</a>
+            </li>
+            <li class="pageLink">
+                <a class="activePage" onclick="handleOptionClick('view_result')">View Results</a>
+            </li>
+
+
+        </ul>
+    </aside>
+    <br>
+    <div class="table-title">
+        <h3>View Result</h3>
+    </div>
+    <br> <br>
+
+    <table class="table-fill">
+        <thead>
+            <tr>
+                <th class="text-left">Roll No.</th>
+                <th class="text-left">Student Name</th>
+                {% for subject_result in results.0.subjects %}
+                    <th class="text-left">{{ subject_result.subject.name }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for student_result in results %}
+                <tr>
+                    <td>{{ student_result.student.rollNo }}</td>
+                    <td>{{ student_result.student.name }}</td>
+                    {% for subject_result in student_result.subjects %}
+                        <td>{{ subject_result.obtained_marks }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button class="saveButton" onclick="saveData()">Save Data</button>
+    <button class="editButton" onclick="editButton()">Edit</button>
+    <script src="{% static 'examsection/js/view.js' %}"></script>
+    <script src="{% static 'examsection/js/exam.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+# Byte-compiled / compiled Python files
+__pycache__/
+*.pyc
+
+# Django related
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Secret key file
+secret_key.txt
+
+# Configuration files
+*.ini
+*.conf
+
+# Environment variable file
+.env
+
+# Log files
+*.log
+
+# Static files
+
+# Media files
+media/
+
+# Database migrations
+CMSproject/core/migrations/*.py
+
+# Local development settings
+settings.py
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Compiled files
+*.pyc
+*.pyo
+
+# Dependency directories
+env/
+venv/
+
+# Django test database
+db.sqlite3
+
+# Node.js related
+node_modules/

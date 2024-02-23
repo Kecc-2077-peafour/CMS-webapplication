@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'canteen/css/c_canteen.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
+    <style>
+        .photo{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .card{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 400px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 15px;
+            text-align: center;
+            color: #333 ;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card img{
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+    
+        }
+        .hide{
+            display: none;
+        }
+        .form-group{
+            padding: 15px;
+   
+        }
+        .form-group input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+    .password{
+        background: #fff;
+        width: 400px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <picture class="logoContainer"> 
+             <!-- college ko logo -->
+            <img src="/media//collegeLogo.png" alt="logo">
+        </picture>
+        {% comment %} <div class="searchContainer">
+            <input type="text" placeholder="Search...">
+            </button>
+        </div> {% endcomment %}
+        <div class="userProfileContainer" onclick="showProfileOptions()">
+            {% if user_type == 'student' %}
+                <img src="{{student_instance.profile_picture.url}}" alt="profilePic" class="profilePic">
+                <div class="fullName" style="font-size: 1.2rem;">{{student_instance.name}}</div>
+            {% elif user_type == 'teacher' %}
+                <img src="{{teacher_instance.profile_picture.url}}" alt="profilePic" class="profilePic">
+                <div class="fullName" style="font-size: 1.2rem;">{{teacher_instance.name}}</div>
+            {% endif %}
+            <!-- add admin wala code pani hai -->
+            <div class="profileOptions">
+                <ul>
+                    <li>
+                        <a href="#">Account</a>
+                    </li>
+                    <li>
+                        <a href="#">Settings</a>
+                    </li>
+                    <li>
+                        <a href="#">Privacy</a>
+                    </li>
+                    <li>
+                        <a href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <aside class="aside">
+        <ul class="pageLinks">
+            <li class="pageLink">
+                <a href="#">Home</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Account</a>
+            </li>
+            <li class="pageLink">
+                {% if user_type == 'student' %}
+                    <a href="{% url 'c_canteen' user=student_instance.student_id %}">Canteen</a>
+                {% elif user_type == 'teacher' %}
+                    <a href="{% url 'c_canteen' user=teacher_instance.teacher_id %}">Canteen</a>
+                {% endif %}
+            </li>
+            <li class="pageLink">
+                <a href="#">Student</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Exam</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Library</a>
+            </li>
+        </ul>
+        <div class="contactInfo">
+            <dl>
+                <dt>P.O.Box:</dt>
+                <dd>3928, Kalimati, Kathmandu</dd>
+            
+                <dt>Email:</dt>
+                <dd><a href="mailto:info@kecktm.edu.np">info@kecktm.edu.np</a></dd>
+            
+                <dt>Contact:</dt>
+                <dd>01-5372833, 9863035297, 01-5372833, 01-5372653</dd>
+            </dl>
+        </div>
+    </aside>
+    <div class="main">
+        <div class="photo">
+        <div class="card">
+            <h3>Change Profile Picture</h3>
+            <img src="blank.webp" id="profile_pic">
+            <input class="hide" type="file" accept="image" id="input-file">
+            <button onclick="changePicture()">Change Picture</button>
+            <!-- store this photo in profile picture -->
+
+            <h3>{{Name}}</h3>
+            <p>{{user.name}}</p>
+        </div>
+       
+   
+    <div class="password">
+        <h3>Change Password</h3>
+        <div class="form-group">
+            <label for="oldPassword">Old Password:</label>
+            <input type="password" id="oldPassword" placeholder="Enter old password" required>
+        </div>
+        <div class="form-group">
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" placeholder="Enter new password" required>
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Re-enter Password:</label>
+            <input type="password" id="confirmPassword" placeholder="Enter new password" required>
+        </div>
+        <div class="button-container">
+            <button type="submit" onclick="changePassword()">Change Password</button>
+            <!-- store this password in database -->
+        </div>
+    </div>
+    </div>
+</div>
+    <script>
+ const aside = document.getElementsByClassName("aside")[0];
+const main = document.getElementsByClassName("main")[0];
+const navbarHeight = document.getElementsByClassName("navbar")[0].clientHeight;
+const windowHeight = window.innerHeight;
+const profileOptions = document.getElementsByClassName("profileOptions")[0];
+
+function adjustHeight(){
+    aside.style.height = (windowHeight - navbarHeight) + 'px';
+    main.style.height = (windowHeight - navbarHeight) + 'px';
+    main.style.maxHeight = (windowHeight - navbarHeight) + 'px';
+
+}
+adjustHeight();
+
+let optionsContainer = document.getElementById("profile_options");
+    let profilepic = document.getElementById("profile_pic");
+    let inputfile = document.getElementById("input-file");
+
+function showProfileOptions(){
+    if (profileOptions.style.display === '' || profileOptions.style.display === 'none'){
+        profileOptions.style.display = 'block';
+    }
+    else{
+        profileOptions.style.display = 'none';
+    }
+}
+
+    inputfile.onchange = function () {
+        profilepic.src = URL.createObjectURL(inputfile.files[0]);
+    }
+
+    function changePicture() {
+        // You can trigger the file input click event to open the file dialog
+        inputfile.click();
+    }
+    function changePassword() {
+        // Get old and new password values
+        var oldPassword = document.getElementById("oldPassword").value;
+        var newPassword = document.getElementById("newPassword").value;
+        var confirmPassword = document.getElementById("confirmPassword").value;
+        // fetch password from database
+        var predefinedOldPassword = "old123";
+        if (newPassword == confirmPassword && oldPassword === predefinedOldPassword) {
+                alert("Password changed successfully!");
+                // add logic here to send the new password to the server
+                return true;
+            }
+        else if (newPassword !== confirmPassword) {
+            alert("Passwords donot match. Please try again.");
+            // add logic here to send the new password to the server
+            return false;
+        }
+         else if (oldPassword !== predefinedOldPassword) {
+            alert("Incorrect old password. Please try again.");
+        }
+    }
+
+    </script>
+</body>
+</html>

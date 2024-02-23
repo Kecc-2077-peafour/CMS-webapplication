@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Management System</title>
+    <!-- Include Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
+</head>
+<body>
+    <nav class="navbar">
+        <picture class="logoContainer">
+            <img src="/media/collegeLogo.png" alt="logo">
+        </picture>
+        {% comment %} <div class="searchContainer">
+            <input type="text" placeholder="Search...">
+            <button class="search_button">
+            </button>
+        </div> {% endcomment %}
+        <div class="userProfileContainer" onclick="showProfileOptions()">
+            <img src="{{student_instance.profile_picture.url}}" alt="profilePic" class="profilePic">
+            <div class="fullName" style="font-size: 1.2rem;">{{student_instance.name}}</div>
+            <div class="profileOptions">
+                <ul>
+                    <li>
+                        <a href="#">Account</a>
+                    </li>
+                    <li>
+                        <a href="#">Settings</a>
+                    </li>
+                    <li>
+                        <a href="#">Privacy</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <aside class="aside">
+        <ul class="pageLinks">
+            <li class="pageLink">
+                <a href="{% url 's_dashboard' %}">Home</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Account</a>
+            </li>
+            <li class="pageLink">
+                <a href="{% url 'c_canteen'  %}">Canteen</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Student</a>
+            </li>
+            <li class="pageLink">
+                <a class="activePage" href="{% url 'student_view' %}">Exam</a>
+            </li>
+
+            <li class="pageLink">
+                <a href="#">Library</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Faculty</a>
+            </li>
+        
+        </ul>
+        
+  
+    </aside>
+    <div id="filterModal" class="modal">
+        <div class="modal-content">
+            <h2></h2>
+            <form id="filterForm">
+                {% csrf_token %}
+                <label for="semester">Select Semester:</label>
+                <select id="semester" name="semester">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+                <label for="type">Exam Type</label>
+                <select id="type" name="type">
+                    <option value="Regular">Regular</option>
+                    <option value="Back">Back</option>
+                </select>
+                
+                <div class="button-container">
+                    <button id="goButton" type="button" onclick="applyFilters()" data-selected-option ="studentResult">Go</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="content">
+        <div class="dashboard-bar">
+            <h1>Dashboard</h1>
+        </div>
+
+        <div class="icons">
+           <!-- Add onclick attribute to each icon -->
+    <a href="#" class="icon" id="totalStudentsIcon" onclick="openFilterModal()">
+        <i class="fas fa-laptop fa-10x"></i>
+        <p style="font-size: 2em;">View your result</p>
+    </a>
+    {% for semester in distinct_semesters %}
+    <h2>Semester {{ semester }}</h2>
+
+    <table class="table-fill">
+        <thead>
+            <tr>
+                {% for subject_result in results %}
+                    {% if subject_result.student.semester == semester %}
+                        {% for subject in subject_result.subjects %}
+                            {% if forloop.first %}
+                                <th class="text-left">{{ subject.subject.name }}</th>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for student_result in results %}
+                {% if student_result.student.semester == semester %}
+        <tr>
+            <td>{{ student_result.student.rollNo }}</td>
+            <td>{{ student_result.student.name }}</td>
+            {% for subject_result in student_result.subjects %}
+                <td>{{ subject_result.obtained_marks }}</td>
+            {% endfor %}
+        </tr>
+    {% endif %}
+{% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+<script>
+    var viewmyResultUrl = " {% url 'viewmyresult' %} ";
+</script>
+<script src="{% static 'examsection/js/exam.js' %}"></script>
+</body>
+</html>

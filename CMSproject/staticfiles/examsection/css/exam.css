@@ -1,0 +1,441 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+li,
+a {
+    text-decoration: none;
+    list-style: none;
+    color: black;
+}
+
+ul li:hover {
+    background-color: #5092c2;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 2rem;
+    background-color: #7cbff0;
+    position: fixed; /* Stick it to the top */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    width: 100%; /* Occupy full width */
+}
+
+.navbar .logoContainer {
+    display: block;
+    width: 10rem;
+    padding: 0.5rem 0;
+
+}
+
+.navbar .logoContainer img {
+    width: 100%;
+}
+
+.navbar .searchContainer {
+    width: 40%;
+    position: relative;
+}
+
+.navbar .searchContainer input {
+    width: 100%;
+    height: 3rem;
+    padding: 0rem 1rem;
+    border-radius: 100rem;
+    border: 2px solid gainsboro;
+    font-size: 1.25rem;
+}
+
+.navbar .searchContainer button {
+    height: 1.4rem;
+    width: 1.4rem;
+    border: none;
+    background: url(/media/searchIcon.svg) no-repeat center center/cover;
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.navbar .userProfileContainer {
+    display: flex;
+    align-items: center;
+    padding-right: 2rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.navbar .userProfileContainer .profileOptions {
+    display: none;
+    position: absolute;
+    top: 140%;
+    width: 100%;
+    background-color: #4f88b0e6;
+}
+
+.navbar .userProfileContainer .profileOptions ul li {
+    padding: 1rem .65rem;
+    font-size: 1.25rem;
+    transition: background-color ease 500ms;
+}
+
+.navbar .userProfileContainer img {
+    border-radius: 50%;
+    margin-right: .5rem;
+    height: 3rem;
+}
+
+.aside {
+    width: 25%;
+    background-color: #99C6E6;
+    padding-top: 2.5rem;
+    position: fixed; /* Stick the aside to the left */
+    left: 0; /* Align to the left */
+    top: 85px; /* Adjust top position as needed */
+    height: 100%; /* Occupy full height */
+    overflow-y: auto; 
+}
+
+.aside ul li {
+    margin-bottom: 1.55rem;
+    font-size: 1.2rem;
+    /* background-color: white; */
+    transition: background-color ease 500ms;
+    padding: .75rem 2rem;
+
+}
+
+.activePage {
+    position: relative;
+}
+
+.aside ul .activePage::before {
+    content: '';
+    position: absolute;
+    left: -13%;
+    right: 0;
+    height: 100%;
+    width: 4.5%;
+    background-color: black;
+    transform: translate(-50%);
+}
+
+.aside ul li a {
+    color: black;
+}
+.aside .contactInfo{
+    bottom: 0;
+    position: inherit;
+    width: 100%;
+    padding: 2rem 1rem;
+    font-size: 1rem;
+}
+dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: .5rem;
+  }
+
+dt {
+font-weight: bold;
+}
+
+.pageLinks {
+    list-style: none;
+    padding: 0;
+}
+
+.pageLink {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.pageLink i {
+    margin-right: 10px;
+}
+.container {
+    text-align: center;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+select {
+    padding: 10px;
+    font-size: 14px;
+}
+
+button {
+    padding: 10px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.content {
+    display: flex;
+    margin-top: auto;
+    margin-left: 250px;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+label {
+    margin: 10px 0;
+    font-weight: bold;
+    color: #555;
+}
+
+select, input {
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center; /* Center the items horizontally */
+    height: 100%; /* Ensure full height */
+}
+
+
+
+/* Styles for the Course Modal */
+
+.course-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.course-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+#helpModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 600px; /* Adjust the max-width as needed for a book-sized appearance */
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+#helpModal h2 {
+    margin-bottom: 10px;
+}
+
+#helpModal p {
+    margin-bottom: 15px;
+}
+
+#helpModal button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#fileInput {
+    display: none; /* Hide the file input visually */
+}
+
+#spreadsheetData {
+    margin-top: 20px;
+    border-collapse: collapse;
+    width: 80%; /* Adjust the width as needed */
+    margin-left: 25%;
+    margin-right: auto;
+}
+
+#spreadsheetData th,
+#spreadsheetData td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#spreadsheetData th {
+    background-color: #3498db;
+    color: white;
+}
+
+
+#goButton {
+    background-color: #4caf50;
+    color: #e9eff7;
+    border: none;
+    
+
+
+}
+#importButton {
+    background-color: #4caf50;
+    border: none;
+    color: #e9eff7;
+    align-self: flex-end; /* Align the Import button to the flex-end */
+    margin-top: 0px; /* Add margin for separation */
+    margin-right: 10px; /* Add right margin of 10 pixels */
+}
+
+
+#deleteButton {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: #4caf50;
+    border: none;
+    color: #e9eff7;
+}
+
+#submitButton {
+    position: fixed;
+    bottom: 10px;
+    right: 120px;
+    background-color: #4caf50;
+    border: none;
+    color: #e9eff7;
+}
+
+
+.button-container button:hover {
+    background-color: #45a049;
+}
+/* Icon Styles */
+.icon {
+    position: absolute;
+    top: 30%;
+    right: 30%;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.icon i {
+    margin-right: 8px;
+}
+
+.icon:hover {
+    color: #007bff;
+    background-color: #f0f0f0;
+    transition: background-color 0.3s ease;
+}
+/* Toastr Notification Styles */
+#toast-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    z-index: 9999;
+}
+
+.toast {
+    position: relative;
+    margin: 0 0 6px;
+    padding: 15px 15px 15px 10px;
+    width: 300px;
+    border-radius: 3px;
+    cursor: pointer;
+    background: #333;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: -325px;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.toast:hover {
+    box-shadow: 0 0 12px #fff;
+    margin-right: 0;
+}
+
+.toast-close-button {
+    position: relative;
+    right: -10px;
+    top: -10px;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+}
+
+.toast-close-button:hover {
+    color: #eee;
+}
+
+.toast-info {
+    background: #3498db;
+}
+
+.toast-success {
+    background: #07bc0c;
+}
+
+.toast-warning {
+    background: #f39c12;
+}
+
+.toast-error {
+    background: #e74c3c;
+}
+
+
+
+

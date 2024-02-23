@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'canteen/css/c_canteen.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
+</head>
+<body>
+    <nav class="navbar">
+        <picture class="logoContainer">
+            <img src="/media/collegeLogo.png" alt="logo">
+        </picture>
+        {% comment %} <div class="searchContainer">
+            <input type="text" placeholder="Search...">
+            <!-- <button class="search_button"> -->
+            </button>
+        </div> {% endcomment %}
+        <div class="userProfileContainer" onclick="showProfileOptions()">
+            {% if user_type == 'student' %}
+                <img src="{{student_instance.profile_picture.url}}" alt="profilePic" class="profilePic">
+                <div class="fullName" style="font-size: 1.2rem;">{{student_instance.name}}</div>
+            {% elif user_type == 'teacher' %}
+                <img src="{{teacher_instance.profile_picture.url}}" alt="profilePic" class="profilePic">
+                <div class="fullName" style="font-size: 1.2rem;">{{teacher_instance.name}}</div>
+            {% endif %}
+            <div class="profileOptions">
+                <ul>
+                    <li>
+                        <!-- add change account.html here -->
+                        <a href="#">Account</a>
+                    </li>
+                    <li>
+                        <a href="#">Settings</a>
+                    </li>
+                    <li>
+                        <a href="#">Privacy</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <aside class="aside">
+        <ul class="pageLinks">
+            <li class="pageLink">
+                <a href="{% url 's_dashboard' %}">Home</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Account</a>
+            </li>
+            <li class="pageLink">
+                <a class="activePage" href="{% url 'c_canteen' %}">Canteen</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Student</a>
+            </li>
+            <li class="pageLink">
+                <a href="{% url 'student_view' %}">Exam</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Library</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Faculty</a>
+            </li>
+        </ul>
+        {% comment %} <div class="contactInfo">
+            <dl>
+                <dt>P.O.Box:</dt>
+                <dd>3928, Kalimati, Kathmandu</dd>
+            
+                <dt>Email:</dt>
+                <dd><a href="mailto:info@kecktm.edu.np">info@kecktm.edu.np</a></dd>
+            
+                <dt>Contact:</dt>
+                <dd>01-5372833, 9863035297, 01-5372833, 01-5372653</dd>
+            </dl>
+        </div> {% endcomment %}
+    </aside>
+    <main class="main">
+        <div class="top">
+            <h2>CANTEEN</h2>
+            <div class="notice">
+            <div class="notification" onclick="togglenoti()">
+                <img height="40px" width="40px" src="/media/bell.png" alt=""><span class="span" >2</span>
+            </div>
+                <div class="not-box" id="batta">
+                    <div class="text">
+                        Lorem ipsum dolor sit amet 
+                    </div>
+                    <div class="text">
+                        Lorem ipsum dolor sit amet 
+                    </div>
+                    <div class="text">
+                        Lorem ipsum dolor sit amet
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="menu special">
+            <div class="title">
+                <h3>Today's Special</h3>
+            </div>
+            <div class="itemsContainer">
+                {% for item in menu_items %}
+                    {% if item.special %}
+                    <div class="item" data-item-id="{{ item.id }}">
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                        <div class="itemName">{{ item.name }}</div>
+                        <div class="itemPrice"> Rs.{{ item.price }}-/</div>
+                        <div class="itemDescription"> {{ item.description }}</div>
+                        <button onclick="openQuantityPopup(this)">Order</button>
+                        <div class="quantity-popup" id="quantityPopup">
+                            <form method="post">
+                                {% csrf_token %}
+                            <label for="quantityInput">Enter Quantity:</label>
+                            <input type="number" id="quantityInput" min="1" value="1">
+                            <button onclick="orderItem(this)" 
+                                data-customer-id="{% if user_type == 'student' %}{{ student_instance.student_id }}{% elif user_type == 'teacher' %}{{ teacher_instance.teacher_id }}{% endif %}"
+                                data-customer-name="{% if user_type == 'student' %}{{ student_instance.name }}{% elif user_type == 'teacher' %}{{ teacher_instance.name }}{% endif %}"
+                                data-customer-image="{% if user_type == 'student' %}{{ student_instance.profile_picture.url }}{% elif user_type == 'teacher' %}{{ teacher_instance.profile_picture.url }}{% endif %}"
+                                >Order
+                            </button>
+                            <button onclick="closePopup()">Close</button>
+
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                </div>
+            </div>
+        </section>
+        <section class="menu">
+            <div class="title">
+                <h3>Menu</h3>
+            </div>
+            <div class="itemsContainer">
+                {% for item in menu_items %}
+                <div class="item" data-item-id="{{ item.id }}">
+                    <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                    <div class="itemName">{{ item.name }}</div>
+                    <div class="itemPrice"> Rs.{{ item.price }}-/</div>
+                    <div class="itemDescription"> {{ item.description }}</div>
+                    <button onclick="openQuantityPopup(this)">Order</button>
+                    <div class="quantity-popup" id="quantityPopup">
+                        <form method="post">
+                            {% csrf_token %}
+                        <label for="quantityInput">Enter Quantity:</label>
+                        <input type="number" id="quantityInput" min="1" value="1">
+                        <button onclick="orderItem(this)" 
+                            data-customer-id="{% if user_type == 'student' %}{{ student_instance.student_id }}{% elif user_type == 'teacher' %}{{ teacher_instance.teacher_id }}{% endif %}"
+                            data-customer-name="{% if user_type == 'student' %}{{ student_instance.name }}{% elif user_type == 'teacher' %}{{ teacher_instance.name }}{% endif %}"
+                            data-customer-image="{% if user_type == 'student' %}{{ student_instance.profile_picture.url }}{% elif user_type == 'teacher' %}{{ teacher_instance.profile_picture.url }}{% endif %}"
+                            >Order
+                        </button>
+                        <button onclick="closePopup()">Close</button>
+
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>   
+    <script src="{% static 'canteen/js/c_canteen.js' %}"></script>
+</body>
+</html>
