@@ -1,2 +1,2 @@
 # CMS-webapplication
-A web aplication: College Management System
+College Management System:A web application
