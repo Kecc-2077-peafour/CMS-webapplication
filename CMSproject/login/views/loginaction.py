@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from core.models import Admin, Student, Teacher
 
+
 def login_view(request):
     return render(request, 'login/login.html')
 
@@ -16,17 +17,17 @@ def loginaction(request):
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
-            # Login the user
             print(f"User {user.email} authenticated successfully")
+            print(f"Number of users' sessions before login: {len(request.session.keys())}")
+            # Login the user
             login(request, user)
-
+            request.session['user_role'] = user.usertype
             usertype = user.usertype
 
+            print(f"Number of users' sessions after login: {len(request.session.keys())}")
             if usertype == 'student':
-                student = Student.objects.get(user=user)
                 return redirect(reverse('s_dashboard'))
             elif usertype == 'teacher':
-                teacher = Teacher.objects.get(user=user)
                 return redirect(reverse('s_dashboard'))
             elif usertype == 'admin':
                 if Admin.objects.filter(user=user).exists():

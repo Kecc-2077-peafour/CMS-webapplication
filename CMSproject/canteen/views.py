@@ -13,32 +13,32 @@ from django.contrib import messages
 from django.http import Http404
 
 def logout_view(request):
+    print('this view was invoked')
     logout(request)
     messages.success(request, 'You have been successfully logged out.')
     return redirect('login:login')
  
 @login_required
 def c_canteen_view(request):
-    user = request.user  # Django's authenticated user
+    user_role = request.session.get('user_role', None)  # Django's authenticated user
     menu_items = MenuItem.objects.all()
 
-    if user.usertype == 'student':
-        student_instance = user.student
-        context = {'student_instance': student_instance, 'teacher_instance': None, 'user_type': 'student', 'menu_items': menu_items}
+    if user_role == 'student':
+        context = {'student_instance': request.user.student, 'teacher_instance': None, 'user_type': 'student', 'menu_items': menu_items}
         return render(request, 'canteen/c_canteen.html', context)
-    elif user.usertype == 'teacher':
-        teacher_instance = user.teacher
-        context = {'student_instance': None, 'teacher_instance': teacher_instance, 'user_type': 'teacher', 'menu_items': menu_items}
+    elif user_role == 'teacher':
+        context = {'student_instance': None, 'teacher_instance': request.user.teacher, 'user_type': 'teacher', 'menu_items': menu_items}
         return render(request, 'canteen/c_canteen.html', context)
     else:
         raise Http404("User not found")
     
 @login_required
 def s_canteen_view(request):
-    user = request.user  # Django's authenticated user
+    user_role = request.session.get('user_role', None)  # Django's authenticated user
     menu_items = MenuItem.objects.all()
 
-    if user.usertype == 'admin':
+    if user_role == 'admin':
+        user = request.user
         admin_instance = user.admin
         context = {'admin_instance': admin_instance, 'menu_items': menu_items}
         return render(request, 'canteen/s_canteen.html', context)
@@ -46,13 +46,13 @@ def s_canteen_view(request):
         raise Http404("Admin not found")
     
 @login_required
-@login_required
 def orders_view(request):
     print('to display order page')
-    user = request.user  # Django's authenticated user
+    user_role = request.session.get('user_role', None)  # Django's authenticated user
     print('so the authentication failed?')
     
-    if user.usertype == 'admin':
+    if user_role == 'admin':
+        user = request.user
         # If the user is an admin, proceed with the logic
         order_items = Order.objects.all()
         for order in order_items:

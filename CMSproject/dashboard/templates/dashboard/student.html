@@ -121,7 +121,7 @@
     <table class="table-fill">
         <thead>
             <tr>
-                {% for subject_result in results %}
+                {% for subject_result in organized_results %}
                     {% if subject_result.student.semester == semester %}
                         {% for subject in subject_result.subjects %}
                             {% if forloop.first %}
@@ -133,7 +133,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for student_result in results %}
+            {% for student_result in organized_results %}
                 {% if student_result.student.semester == semester %}
         <tr>
             <td>{{ student_result.student.rollNo }}</td>

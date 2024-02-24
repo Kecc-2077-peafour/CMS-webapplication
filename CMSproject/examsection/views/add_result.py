@@ -3,7 +3,6 @@ from core.models import Student,Marks,Subject
 from django.views.decorators.http import require_POST
 from examsection.forms.add_result import FilterForm
 from django.views.decorators.csrf import csrf_protect
-from examsection.forms.add_result import UploadResultForm
 from django.shortcuts import render, get_object_or_404,redirect
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -32,39 +31,41 @@ def handle_add_result_submission(request):
 
 @login_required
 def addresult_view(request, semester, batch, faculty, exam_type):
-    user = request.user  # Django's authenticated user
-    if user.usertype == 'admin':
+    user_role = request.session.get('user_role', None)
+    if user_role == 'admin':
+        user = request.user
         admin_instance = user.admin
-    print(semester)
-    print(faculty)
-    print(batch)
-    print(exam_type)
-    existing_marks = Marks.objects.filter(
-        student__semester=semester,
-        student__faculty__name=faculty,
-        student__batch=batch,
-        exam_type=exam_type
-    )
+        print(semester)
+        print(faculty)
+        print(batch)
+        print(exam_type)
+        existing_marks = Marks.objects.filter(
+            student__semester=semester,
+            student__faculty__name=faculty,
+            student__batch=batch,
+            exam_type=exam_type
+        )
 
-    # If there are existing entries, return a JSON response
-    if existing_marks.exists():
-        messages.warning(request, 'Duplicate marks cannot be submitted.')
-        return redirect('examsection_view')
-    
-    context = {
-        'admin_instance': admin_instance,
-        'semester': semester,
-        'batch': batch,
-        'faculty': faculty,
-        'exam_type': exam_type,
-    }
-    return render(request, 'examsection/add_result.html', context)
+        # If there are existing entries, return a JSON response
+        if existing_marks.exists():
+            messages.warning(request, 'Duplicate marks cannot be submitted.')
+            return redirect('examsection_view')
+        
+        context = {
+            'admin_instance': admin_instance,
+            'semester': semester,
+            'batch': batch,
+            'faculty': faculty,
+            'exam_type': exam_type,
+        }
+        return render(request, 'examsection/add_result.html', context)
 
 @login_required
 def submit_result_file(request):
     print('i was called')
-    user = request.user  # Django's authenticated user
-    if user.usertype == 'admin':
+    user_role = request.session.get('user_role', None)
+    if user_role == 'admin':
+        user = request.user
         admin_instance = user.admin
     # form = UploadResultForm(request.POST, request.FILES)
     # if not form.is_valid():

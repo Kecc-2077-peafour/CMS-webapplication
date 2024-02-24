@@ -29,46 +29,47 @@ def handle_view_result_submission(request):
 
 @login_required    
 def viewresult_view(request):
-    user = request.user  # Django's authenticated user
-    if user.usertype == 'admin':
+    user_role = request.session.get('user_role', None)
+    if user_role == 'admin':
+        user = request.user
         admin_instance = user.admin
     
-    params = QueryDict(request.GET.urlencode())
-    semester = params.get('semester')
-    batch = params.get('batch',)
-    faculty = params.get('faculty')
-    exam_type = params.get('exam_type')
+        params = QueryDict(request.GET.urlencode())
+        semester = params.get('semester')
+        batch = params.get('batch',)
+        faculty = params.get('faculty')
+        exam_type = params.get('exam_type')
 
-    # Build the dynamic query based on the selected filters
-    query_params = {}
-    if semester is not None:
-        query_params['student__semester'] = semester
-    if batch is not None:
-        query_params['student__batch'] = batch
-    if faculty is not None:
-        query_params['student__faculty__name'] = faculty
-    if exam_type is not None:
-        query_params['exam_type'] = exam_type
+        # Build the dynamic query based on the selected filters
+        query_params = {}
+        if semester is not None:
+            query_params['student__semester'] = semester
+        if batch is not None:
+            query_params['student__batch'] = batch
+        if faculty is not None:
+            query_params['student__faculty__name'] = faculty
+        if exam_type is not None:
+            query_params['exam_type'] = exam_type
 
-    results = Marks.objects.filter(**query_params)
+        results = Marks.objects.filter(**query_params)
 
-    results_by_student = {}
-    for result in results:
-        student_id = result.student.student_id
-        if student_id not in results_by_student:
-            results_by_student[student_id] = {'student': result.student, 'subjects': []}
-        results_by_student[student_id]['subjects'].append(result)
+        results_by_student = {}
+        for result in results:
+            student_id = result.student.student_id
+            if student_id not in results_by_student:
+                results_by_student[student_id] = {'student': result.student, 'subjects': []}
+            results_by_student[student_id]['subjects'].append(result)
 
-# Convert the dictionary values to a list for easier iteration in the template
-    organized_results = list(results_by_student.values())
+    # Convert the dictionary values to a list for easier iteration in the template
+        organized_results = list(results_by_student.values())
 
-    context = {
-        'admin_instance': admin_instance,
-        'semester': semester,
-        'batch': batch,
-        'faculty': faculty,
-        'exam_type': exam_type,
-        'results': organized_results,
-    }
+        context = {
+            'admin_instance': admin_instance,
+            'semester': semester,
+            'batch': batch,
+            'faculty': faculty,
+            'exam_type': exam_type,
+            'results': organized_results,
+        }
 
-    return render(request, 'examsection/view_result.html', context)
+        return render(request, 'examsection/view_result.html', context)

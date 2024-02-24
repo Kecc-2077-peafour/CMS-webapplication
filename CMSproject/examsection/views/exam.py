@@ -10,8 +10,9 @@ from core.models import Faculty, Subject, Facultysubject
 from django.contrib.auth.decorators import login_required
 @login_required
 def examsection_view(request):
-    user = request.user  # Django's authenticated user
-    if user.usertype == 'admin':
+    user_role = request.session.get('user_role', None)
+    if user_role == 'admin':
+        user = request.user
         admin_instance = user.admin
         return render(request, 'examsection/exam.html', {'admin_instance': admin_instance})
     else:
@@ -35,36 +36,38 @@ def handle_course_Info_submisssion(request):
 
 @login_required
 def courseInfo_view(request):
-    user = request.user  # Django's authenticated user
-    admin_instance = user.admin
+    user_role = request.session.get('user_role', None)
+    if user_role == 'admin':
+        user = request.user
+        admin_instance = user.admin
     
-    params = QueryDict(request.GET.urlencode())
-    semester = params.get('semester')
-    faculty = params.get('faculty')
-    print(f'Semester: {semester}, Faculty: {faculty}')
+        params = QueryDict(request.GET.urlencode())
+        semester = params.get('semester')
+        faculty = params.get('faculty')
+        print(f'Semester: {semester}, Faculty: {faculty}')
 
-    # Build the dynamic query based on the selected filters
-    query_params = {}
-    if semester is not None:
-        query_params['semester'] = semester
-    if faculty is not None:
-        query_params['faculty__name'] = faculty
+        # Build the dynamic query based on the selected filters
+        query_params = {}
+        if semester is not None:
+            query_params['semester'] = semester
+        if faculty is not None:
+            query_params['faculty__name'] = faculty
 
-    results = Facultysubject.objects.filter(**query_params)
-    for result in results:
-        print(f'Faculty: {result.faculty.name}, Semester: {result.semester}, Subjects: {[subject.name for subject in result.subject.all()]}')
-    
-    if faculty == 'Architecture':
-        semester_range = range(1, 11)
-    else:
-        semester_range = range(1, 9)
+        results = Facultysubject.objects.filter(**query_params)
+        for result in results:
+            print(f'Faculty: {result.faculty.name}, Semester: {result.semester}, Subjects: {[subject.name for subject in result.subject.all()]}')
+        
+        if faculty == 'Architecture':
+            semester_range = range(1, 11)
+        else:
+            semester_range = range(1, 9)
 
-    context = {
-        'admin_instance': admin_instance,
-        'semester': semester,
-        'faculty': faculty,
-        'results': results,
-        'semester_range':semester_range,
-    }
+        context = {
+            'admin_instance': admin_instance,
+            'semester': semester,
+            'faculty': faculty,
+            'results': results,
+            'semester_range':semester_range,
+        }
 
-    return render(request, 'examsection/courseInfo.html', context)
+        return render(request, 'examsection/courseInfo.html', context)
