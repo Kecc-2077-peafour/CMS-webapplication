@@ -57,16 +57,16 @@
                 <a href="{% url 'examsection_view' %}">Home</a>
             </li>
             <li class="pageLink">
-                <a href="#" onclick="handleOptionClick('student_analysis')">Student Analysis</a>
+                <a onclick="handleOptionClick('student_analysis')">Student Analysis</a>
             </li>
             <li class="pageLink">
-                <a href="#" onclick="handleOptionClick('course_Info')">Course Info </a>
+                <a onclick="handleOptionClick('course_Info')">Course Info </a>
             </li>
             <li class="pageLink">
-                <a href="#" onclick="handleOptionClick('add_result')">Add Results </a>
+                <a onclick="handleOptionClick('add_result')">Add Results </a>
             </li>
             <li class="pageLink">
-                <a href="#" onclick="handleOptionClick('view_result')">View Results</a>
+                <a onclick="handleOptionClick('view_result')">View Results</a>
             </li>
         
         </ul>
@@ -200,18 +200,6 @@
     
     <!-- Include your custom exam.js file -->
     <script src="{% static 'examsection/js/exam.js' %}"></script>
-    
-    <script>
-        window.onload = function() {
-            const duplicateMarks = {{ duplicate_marks|yesno:"True,False" }};
-            if (duplicateMarks) {
-                // Handle the message or redirect to exam.html using JavaScript
-                alert('Duplicate marks cannot be submitted.');
-                // Redirect to exam.html using window.location.href or another method
-                window.location.href = '{% url "examsection_view" %}';
-            }
-        };
-    </script>
 </body>
 
 </html>

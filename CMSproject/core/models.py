@@ -108,7 +108,7 @@ class Admin(models.Model):
 
 
     def __str__(self):
-        return f"{self.role}"
+        return f"{self.name}-{self.role}"
 
 class Marks(models.Model):
     EXAM_TYPE_CHOICES = [

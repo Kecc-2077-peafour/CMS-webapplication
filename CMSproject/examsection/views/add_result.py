@@ -11,7 +11,7 @@ from decimal import Decimal
 import json
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.urls import reverse
 
 @csrf_protect
 def handle_add_result_submission(request):
@@ -48,9 +48,11 @@ def addresult_view(request, semester, batch, faculty, exam_type):
 
         # If there are existing entries, return a JSON response
         if existing_marks.exists():
-            messages.warning(request, 'Duplicate marks cannot be submitted.')
-            return redirect('examsection_view')
-        
+            print('duplicate entryy')
+            redirect_message = 'Duplicate marks cannot be submitted. Please review and correct your entries.'
+            redirect_url = reverse('examsection_view') + f'?redirect_message={redirect_message}'
+            return redirect(redirect_url)
+            
         context = {
             'admin_instance': admin_instance,
             'semester': semester,
@@ -123,7 +125,7 @@ def submit_result_file(request):
                                 
                                 if not (isinstance(obtained_marks, Decimal) and 0 <= obtained_marks <= subject_full_marks):
                                     raise ValidationError(_('Invalid marks {} for subject {} of student {}. Marks should be an integer between 0 and {}.'.format(obtained_marks, subject_name, roll_number, subject_full_marks)))
-                    
+                                print('here')
                                 Marks.objects.create(
                                     subject=subjects_instance,
                                     student=student,

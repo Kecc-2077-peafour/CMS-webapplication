@@ -6,15 +6,17 @@ from examsection.forms.view_result import FilterForm
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 from django.http import QueryDict
-from core.models import Faculty, Subject, Facultysubject
+from core.models import Facultysubject
 from django.contrib.auth.decorators import login_required
 @login_required
 def examsection_view(request):
     user_role = request.session.get('user_role', None)
     if user_role == 'admin':
         user = request.user
-        admin_instance = user.admin
-        return render(request, 'examsection/exam.html', {'admin_instance': admin_instance})
+        messages_to_display = request.GET.get('redirect_message', None)
+        print(messages_to_display)
+        context = {'admin_instance':user.admin,'messages':messages_to_display}
+        return render(request, 'examsection/exam.html', context)
     else:
         raise Http404("Admin not found")
     

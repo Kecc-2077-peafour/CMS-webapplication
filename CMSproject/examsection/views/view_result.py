@@ -7,9 +7,11 @@ from django.views.decorators.http import require_POST
 from examsection.forms.view_result import FilterForm
 from django.views.decorators.csrf import csrf_protect
 from django.views import View
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect
 from collections import defaultdict
 from django.contrib.auth.decorators import login_required
+import json
+from django.urls import reverse
 
 @csrf_protect
 def handle_view_result_submission(request):
@@ -59,10 +61,10 @@ def viewresult_view(request):
             if student_id not in results_by_student:
                 results_by_student[student_id] = {'student': result.student, 'subjects': []}
             results_by_student[student_id]['subjects'].append(result)
+            print(f"Result: {result}")
 
     # Convert the dictionary values to a list for easier iteration in the template
         organized_results = list(results_by_student.values())
-
         context = {
             'admin_instance': admin_instance,
             'semester': semester,
@@ -73,3 +75,37 @@ def viewresult_view(request):
         }
 
         return render(request, 'examsection/view_result.html', context)
+
+@login_required
+def editresult_view(request):
+    user_role = request.session.get('user_role', None)
+    if user_role == 'admin':
+        user = request.user
+        admin_instance = user.admin
+        try:
+            data = json.loads(request.body)
+            results_to_update = data.get('data', [])
+            # Iterate through the collected data and update the database
+            for result_data in results_to_update:
+                marks_id = result_data.get('marksId')
+                present_data =float(result_data.get('presentData'))
+
+                marks_instance = Marks.objects.get(id=marks_id)
+                print(marks_instance)
+                # Check if present_data is within valid range
+                if 0 <= present_data <=float( marks_instance.subject.full_marks):
+                    marks_instance.obtained_marks = present_data
+                    marks_instance.marks_updated_by=admin_instance
+                    marks_instance.save()
+                else:
+                    response_data = {'success': False, 'message': 'Invalid Data: Please enter valid data'}
+                    return JsonResponse(response_data, status=400)
+            
+            response_data = {'success': True, 'message': 'Edited successfully!'}
+            return JsonResponse(response_data)
+        except Exception as e:
+            print(f'An unexpected error occurred: {e}')
+            response_data = {'success': False, 'message': 'An unexpected error occurred'}
+            return JsonResponse(response_data, status=500)
+    else:
+        raise Http404("Admin not found")
