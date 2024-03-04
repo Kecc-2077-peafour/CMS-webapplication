@@ -47,38 +47,59 @@
             </div>
         </div>
     </nav>
-    <aside class="aside">
-        <ul class="pageLinks">
-            <li class="pageLink">
-                <a href="{% url 's_dashboard' %}">Home</a>
-            </li>
-            <li class="pageLink">
-                <a href="#">Account</a>
-            </li>
-            <li class="pageLink">
-                <a href="{% url 'c_canteen'  %}">Canteen</a>
-            </li>
-            <li class="pageLink">
-                <a href="#">Student</a>
-            </li>
-            <li class="pageLink">
-                <a class="activePage" href="{% url 'student_view' %}">Exam</a>
-            </li>
+   <aside class="aside">
+    <ul class="pageLinks">
+        <li class="pageLink">
+            <a href="{% url 's_dashboard' %}">Home</a>
+        </li>
+        <li class="pageLink">
+            <a href="#">Account</a>
+        </li>
+        <li class="pageLink">
+            <a href="{% url 'c_canteen'  %}">Canteen</a>
+        </li>
+        <li class="pageLink">
+            <a href="#">Student</a>
+        </li>
+        <li class="pageLink">
+            <a class="activePage" href="{% url 'student_view' %}">Exam</a>
+        </li>
+        <li class="pageLink">
+            <a href="#">Library</a>
+        </li>
+        <li class="pageLink">
+            <a href="#">Faculty</a>
+        </li>
+    </ul>
+</aside>
+<aside class="aside">
+    <ul class="pageLinks">
+        <li class="pageLink">
+            <a href="{% url 's_dashboard' %}">Home</a>
+        </li>
+        <li class="pageLink">
+            <a href="#">Account</a>
+        </li>
+        <li class="pageLink">
+            <a href="{% url 'c_canteen'  %}">Canteen</a>
+        </li>
+        <li class="pageLink">
+            <a href="#">Student</a>
+        </li>
+        <li class="pageLink">
+            <a class="activePage" href="{% url 'student_view' %}">Exam</a>
+        </li>
+        <li class="pageLink">
+            <a href="#">Library</a>
+        </li>
+        <li class="pageLink">
+            <a href="#">Faculty</a>
+        </li>
+    </ul>
+</aside>
 
-            <li class="pageLink">
-                <a href="#">Library</a>
-            </li>
-            <li class="pageLink">
-                <a href="#">Faculty</a>
-            </li>
-        
-        </ul>
-        
-  
-    </aside>
     <div id="filterModal" class="modal">
         <div class="modal-content">
-            <h2></h2>
             <form id="filterForm">
                 {% csrf_token %}
                 <label for="semester">Select Semester:</label>

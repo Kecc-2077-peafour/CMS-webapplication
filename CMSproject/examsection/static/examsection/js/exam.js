@@ -22,13 +22,11 @@ const navbarHeight = document.getElementsByClassName("navbar")[0].clientHeight;
 const windowHeight = window.innerHeight;
 const profileOptions = document.getElementsByClassName("profileOptions")[0];
 
-function adjustHeight(){
-    aside.style.height = (windowHeight - navbarHeight) + 'px';
-    main.style.height = (windowHeight - navbarHeight) + 'px';
-    main.style.maxHeight = (windowHeight - navbarHeight) + 'px';
-
+function adjustHeight() {
+    aside.style.height = '100vh';
+    main.style.height = 'calc(100vh - ' + navbarHeight + 'px)';
 }
-adjustHeight();
+
 
 function showProfileOptions(){
     if (profileOptions.style.display === '' || profileOptions.style.display === 'none'){
@@ -506,5 +504,5 @@ toastr.options = {
     positionClass: 'toast-top-right',
     timeOut: 5000,
 };
-toastr.success('This is a success message');
+
 

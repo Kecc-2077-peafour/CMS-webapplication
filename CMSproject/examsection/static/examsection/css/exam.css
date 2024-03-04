@@ -151,16 +151,22 @@ font-weight: bold;
 .pageLinks {
     list-style: none;
     padding: 0;
+    cursor: default;
+
 }
 
 .pageLink {
     margin-bottom: 10px;
     display: flex;
     align-items: center;
+    cursor: default;
+
 }
 
 .pageLink i {
     margin-right: 10px;
+    cursor: default;
+
 }
 .container {
     text-align: center;
@@ -315,9 +321,9 @@ select, input {
     background-color: #4caf50;
     border: none;
     color: #e9eff7;
-    align-self: flex-end; /* Align the Import button to the flex-end */
-    margin-top: 0px; /* Add margin for separation */
-    margin-right: 10px; /* Add right margin of 10 pixels */
+    align-self: flex-end;
+    margin-top: -80px; /* Adjust as needed */
+    margin-right: 10px;
 }
 
 
@@ -434,6 +440,8 @@ select, input {
 .toast-error {
     background: #e74c3c;
 }
+
+
 
 
 
