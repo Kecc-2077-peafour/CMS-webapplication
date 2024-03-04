@@ -6,7 +6,8 @@ from examsection.forms.view_result import FilterForm
 from django.http import JsonResponse
 from django.http import QueryDict
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render,redirect
+from django.urls import reverse
 
 @login_required
 def s_dashboard_view(request):
@@ -43,37 +44,44 @@ def teacher_view(request):
 
 @login_required
 def handle_viewmy_result_submission(request):
-    if request.method == 'POST':
-        form = FilterForm(request.POST)
+    user_role = request.session.get('user_role', None)
+    if user_role == 'student':
+        user = request.user
+        current_semester = user.student.semester
 
-        if form.is_valid():
-            filter_metadata = form.get_filter_metadata()
-            print("Filter Metadata After Validation:", filter_metadata)
-            return JsonResponse({'success': True, 'data': filter_metadata})
+        if request.method == 'POST': 
+            semester = request.POST.get('semester')
+            print('yo view ta kahile chalekai xaina?')
+
+            if current_semester >= int(semester):
+                filter_metadata = request.POST.dict()
+                print("Filter Metadata After Validation:", filter_metadata)
+                return JsonResponse({'success': True, 'data': filter_metadata})
+            else:
+                print('not a valid sem')
+                error_message = "Invalid semester. Please enter a semester greater than or equal to the current semester."
+                return JsonResponse({'success': False, 'error': error_message}, status=400)
         else:
-            print("Validation Errors:", form.errors)
-            return JsonResponse({'success': False, 'errors': form.errors})
-    else:
-        return JsonResponse({'success': False, 'errors': 'Invalid request method'})
-
+            return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=500)
 
 def viewmyResult_view(request):
     print('to print my own damn result')
     user_role = request.session.get('user_role', None)
     if user_role == 'student':
         print('authenticated right')
-        user = request.user  # Django's authenticated user
+        user = request.user 
         student_instance = user.student
-        
+    
         params = QueryDict(request.GET.urlencode())
         semester = params.get('semester')
         exam_type = params.get('exam_type')
         print(semester, exam_type)
+        
+        current_semester = student_instance.semester
+        print('current semester type:', type(current_semester),current_semester)
+        print('semester type:', type(semester),semester)
 
-        current_semester = student_instance.semester  # Assuming that the student model has a 'semester' field
-
-        # Check if the queried semester is greater than or equal to the current semester
-        if semester is not None and int(semester) >= current_semester:
+        if semester is not None and int(semester) <= current_semester:
             print('semester is not none')
             semesters = [int(current_semester)]
             query_params = {'student__semester': current_semester, 'exam_type': exam_type}
@@ -98,7 +106,7 @@ def viewmyResult_view(request):
                 'exam_type': exam_type,
                 'organized_results': organized_results,
             }
-            return render(request, 'examsection/view_result.html', context)
+            return render(request, 'dashboard/student_view_result.html', context)
         elif semester is None:
             print('semester is none')
             # If semester is None, fetch distinct semester values for the student
@@ -126,18 +134,12 @@ def viewmyResult_view(request):
                 'organized_results': organized_results,
                 'distinct_semesters': distinct_semesters,
             }
-
-            return render(request, 'examsection/view_result.html', context)
+            return render(request, 'dashboard/student_view_result.html', context)
         else:
             print('not a valid sem')
-            # Display an error message
             error_message = "Invalid semester. Please enter a semester greater than or equal to the current semester."
-            context = {
-                'student_instance': student_instance,
-                'error_message': error_message,
-            }
-
-            return JsonResponse (context)
+            context = {'success': False, 'error_message': error_message}
+            return JsonResponse(context, status=400) 
         
 def handle_teacher_view_result_submission(request):
     user_role = request.session.get('user_role', None)

@@ -49,72 +49,33 @@
     </nav>
     <aside class="aside">
         <ul class="pageLinks">
-            <li class="pageLink" onclick="window.location.href='{% url 's_dashboard' %}'">
-                Home
+            <li class="pageLink">
+                <a href="{% url 's_dashboard' %}">Home</a>
             </li>
             <li class="pageLink">
                 <a href="#">Account</a>
             </li>
-            <li class="pageLink" onclick="window.location.href='{% url 'c_canteen'  %}'">
-                Canteen
+            <li class="pageLink">
+                <a href="{% url 'c_canteen'  %}">Canteen</a>
             </li>
             <li class="pageLink">
                 <a href="#">Student</a>
             </li>
-            <li class="pageLink" onclick="window.location.href='{% url 'student_view' %}'">
-                Exam
+            <li class="pageLink">
+                <a class="activePage" href="{% url 'student_view' %}">Exam</a>
             </li>
+
             <li class="pageLink">
                 <a href="#">Library</a>
             </li>
             <li class="pageLink">
                 <a href="#">Faculty</a>
             </li>
+        
         </ul>
     </aside>
-    
-
-    <div id="filterModal" class="modal">
-        <div class="modal-content">
-            <form id="filterForm">
-                {% csrf_token %}
-                <label for="semester">Select Semester:</label>
-                <select id="semester" name="semester">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                </select>
-                <label for="type">Exam Type</label>
-                <select id="type" name="type">
-                    <option value="Regular">Regular</option>
-                    <option value="Back">Back</option>
-                </select>
-                
-                <div class="button-container">
-                    <button id="goButton" type="button" onclick="applyFilters()" >Go</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="content">
-        <div class="dashboard-bar">
-            <h1>Dashboard</h1>
-        </div>
-
-        <div class="icons">
-           <!-- Add onclick attribute to each icon -->
-    <a class="icon" id="totalStudentsIcon" onclick="handleOptionClick('student_view_result')">
-        <i class="fas fa-laptop fa-10x"></i>
-        <p style="font-size: 2em;">View your result</p>
-    </a>
     {% for semester in distinct_semesters %}
     <h2>Semester {{ semester }}</h2>
-
     <table class="table-fill">
         <thead>
             <tr>
@@ -144,9 +105,5 @@
         </tbody>
     </table>
 {% endfor %}
-<script>
-    var viewmyResultUrl = " {% url 'handle_viewmy_result_submission' %} ";
-</script>
-<script src="{% static 'examsection/js/exam.js' %}"></script>
 </body>
 </html>
