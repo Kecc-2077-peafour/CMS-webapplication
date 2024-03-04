@@ -50,32 +50,30 @@
     </nav>
     <aside class="aside">
         <ul class="pageLinks">
-            <li class="pageLink">
-                <a href="{% url 's_dashboard' %}">Home</a>
+            <li class="pageLink" onclick="window.location.href='{% url 's_dashboard' %}'">
+                Home
             </li>
-            <li class="pageLink">
-                <a href="#">Account</a>
+            <li class="pageLink" onclick="window.location.href='#'">
+                Account
             </li>
-            <li class="pageLink">
-                <a href="{% url 'c_canteen'  %}">Canteen</a>
+            <li class="pageLink" onclick="window.location.href='{% url 'c_canteen'  %}'">
+                Canteen
             </li>
-            <li class="pageLink">
-                <a href="#">Student</a>
+            <li class="pageLink" onclick="window.location.href='#'">
+                Student
             </li>
-            <li class="pageLink">
-                <a class="activePage" href="{% url 'teacher_view' %}">Exam</a>
+            <li class="pageLink" onclick="window.location.href='{% url 'teacher_view' %}'">
+                Exam
             </li>
-
-            <li class="pageLink">
-                <a href="#">Library</a>
+            <li class="pageLink" onclick="window.location.href='#'">
+                Library
             </li>
-            <li class="pageLink">
-                <a href="#">Faculty</a>
+            <li class="pageLink" onclick="window.location.href='#'">
+                Faculty
             </li>
-        
         </ul>
-        <br> <br> <br> <br> <br> <br> <br> <br> <br><br> <br> <br> 
     </aside>
+    
     <div id="filterModal" class="modal">
         <div class="modal-content">
             <h2></h2>

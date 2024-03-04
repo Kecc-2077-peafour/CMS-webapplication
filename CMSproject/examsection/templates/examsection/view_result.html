@@ -7,14 +7,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Result</title>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/view.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
-    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/view.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
 </head>
 
 <body>
@@ -48,30 +50,24 @@
 
     <aside class="aside">
         <ul class="pageLinks">
-            <li class="pageLink">
+            <li class="pageLink" onclick="handleOptionClick('home')">
                 <a href="{% url 'examsection_view' %}">Home</a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('studnet_analysis')">Student Analysis</a>
+            <li class="pageLink" onclick="handleOptionClick('student_analysis')">
+                <a>Student Analysis</a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('course_Info')">Course Info</a>
+            <li class="pageLink" onclick="handleOptionClick('course_Info')">
+                <a>Course Info </a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('add_result')">Add Results</a>
+            <li class="pageLink" onclick="handleOptionClick('add_result')">
+                <a>Add Results </a>
             </li>
-            <li class="pageLink">
-                <a class="activePage" onclick="handleOptionClick('view_result')">View Results</a>
+            <li class="pageLink" onclick="handleOptionClick('view_result')">
+                <a>View Results</a>
             </li>
-
-
         </ul>
     </aside>
-    <br>
-    <div class="table-title">
-        <h3>View Result</h3>
-    </div>
-    <br> <br>
+
 
     <table id="table-fill" class="table-fill">
         <thead>

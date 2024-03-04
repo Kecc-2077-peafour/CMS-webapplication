@@ -570,4 +570,3 @@ toastr.options = {
     timeOut: 5000,
 };
 toastr.success('This is a success message');
-

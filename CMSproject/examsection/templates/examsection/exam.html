@@ -52,25 +52,24 @@
     </nav>
     <aside class="aside">
         <ul class="pageLinks">
-            <li class="pageLink">
-                <a href="{% url 'examsection_view' %}">Home</a>
+            <li class="pageLink" onclick="window.location.href='{% url 'examsection_view' %}'">
+                Home
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('studnet_analysis')">Student Analysis</a>
+            <li class="pageLink" onclick="handleOptionClick('student_analysis')">
+                Student Analysis
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('course_Info')">Course Info </a>
+            <li class="pageLink" onclick="handleOptionClick('course_Info')">
+                Course Info
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('add_result')">Add Results </a>
+            <li class="pageLink" onclick="handleOptionClick('add_result')">
+                Add Results
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('view_result')">View Results</a>
+            <li class="pageLink" onclick="handleOptionClick('view_result')">
+                View Results
             </li>
-        
         </ul>
-    
     </aside>
+    
     <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div>
 
     <!-- Modal -->
@@ -116,40 +115,41 @@
             </form>
         </div>
     </div>
-    <!-- Another Modal for Courses -->
     <div id="filter" onclick="openCourseModal()">🔍 Filter</div>
-<div id="courseModal" class="modal">
-    <div class="modal-content">
-        <h2>Course Information</h2>
-        <form method="POST" id="courseForm">
-            {% csrf_token %}
-            <label for="courseFaculty">Select Faculty:</label>
-            <select id="courseFaculty" name="courseFaculty">
-                <option value="Computer">Computer</option>
-                <option value="Civil">Civil</option>
-                <option value="Architecture">Architecture</option>
-                <option value="Electrical">Electrical</option>
-                <option value="Electronics">Electronics</option>
-            </select>
-
-            <label for="courseSemester">Select Semester:</label>
-            <select id="courseSemester" name="courseSemester">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-            </select>
-
-            <div class="button-container">
-                <button id="goButton" type="button" onclick="applyFilters()">Go</button>
-            </div>
-        </form>
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <h2>Course Information</h2>
+            <form method="POST" id="courseForm">
+                {% csrf_token %}
+                <label for="courseFaculty">Select Faculty:</label>
+                <select id="courseFaculty" name="courseFaculty">
+                    <option value="Computer">Computer</option>
+                    <option value="Civil">Civil</option>
+                    <option value="Architecture">Architecture</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Electronics">Electronics</option>
+                </select>
+    
+                <label for="courseSemester">Select Semester:</label>
+                <select id="courseSemester" name="courseSemester">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+    
+                <div class="button-container">
+                    <button id="goButton" type="button" onclick="applyFilters()">Go</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+    
+    
     <div>
         {% if messages %}
         <h4>i think i need to write something for it to show right?</h4>

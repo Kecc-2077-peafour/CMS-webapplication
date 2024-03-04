@@ -1,18 +1,4 @@
-const aside = document.getElementsByClassName("aside")[0];
-const main = document.getElementsByClassName("main")[0];
-const navbarHeight = document.getElementsByClassName("navbar")[0].clientHeight;
-const windowHeight = window.innerHeight;
-const profileOptions = document.getElementsByClassName("profileOptions")[0];
 
-function adjustHeight(){
-    aside.style.height = (windowHeight - navbarHeight) + 'px';
-    main.style.height = (windowHeight - navbarHeight) + 'px';
-    main.style.maxHeight = (windowHeight - navbarHeight) + 'px';
-
-}
-adjustHeight();
-// Flag to indicate whether editing is allowed
-var editingAllowed = false;
 
 // Function to enable editing
 function enableEdit() {
