@@ -53,24 +53,22 @@
     </nav>
     <aside class="aside">
         <ul class="pageLinks">
-            <li class="pageLink">
+            <li class="pageLink" onclick="handleOptionClick('home')">
                 <a href="{% url 'examsection_view' %}">Home</a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('student_analysis')">Student Analysis</a>
+            <li class="pageLink" onclick="handleOptionClick('student_analysis')">
+                <a>Student Analysis</a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('course_Info')">Course Info </a>
+            <li class="pageLink" onclick="handleOptionClick('course_Info')">
+                <a>Course Info </a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('add_result')">Add Results </a>
+            <li class="pageLink" onclick="handleOptionClick('add_result')">
+                <a>Add Results </a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('view_result')">View Results</a>
+            <li class="pageLink" onclick="handleOptionClick('view_result')">
+                <a>View Results</a>
             </li>
-        
         </ul>
-    
     </aside>
     <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div>
 
@@ -203,4 +201,5 @@
 </body>
 
 </html>
+
 

@@ -98,10 +98,9 @@ body {
     width: 25%;
     background-color: #99C6E6;
     padding-top: 2.5rem;
-    height: 100%;
-    overflow-y: auto;
-    position: fixed;
-    top: 60px; /* Adjust the top position to start below the navbar */
+    position: fixed; /* Change to fixed so it stays fixed when scrolling */
+    overflow: auto;
+    bottom: 0;
 }
 
 .aside ul li {
@@ -152,7 +151,6 @@ font-weight: bold;
     list-style: none;
     padding: 0;
     cursor: default;
-
 }
 
 .pageLink {
@@ -160,13 +158,11 @@ font-weight: bold;
     display: flex;
     align-items: center;
     cursor: default;
-
 }
 
 .pageLink i {
     margin-right: 10px;
     cursor: default;
-
 }
 .container {
     text-align: center;
@@ -321,9 +317,9 @@ select, input {
     background-color: #4caf50;
     border: none;
     color: #e9eff7;
-    align-self: flex-end;
-    margin-top: -80px; /* Adjust as needed */
-    margin-right: 10px;
+    position: absolute;
+    top: 97px;
+    right: 10px; /* Adjust the right position if needed */
 }
 
 
@@ -440,9 +436,6 @@ select, input {
 .toast-error {
     background: #e74c3c;
 }
-
-
-
 
 
 

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/view.css' %}">
 </head>
 
@@ -46,30 +47,23 @@
 
     <aside class="aside">
         <ul class="pageLinks">
-            <li class="pageLink">
+            <li class="pageLink" onclick="handleOptionClick('home')">
                 <a href="{% url 'examsection_view' %}">Home</a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('studnet_analysis')">Student Analysis</a>
+            <li class="pageLink" onclick="handleOptionClick('student_analysis')">
+                <a>Student Analysis</a>
             </li>
-            <li class="pageLink">
-                <a class="activePage" onclick="handleOptionClick('course_Info')">Course Info</a>
+            <li class="pageLink" onclick="handleOptionClick('course_Info')">
+                <a>Course Info </a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('add_result')">Add Results</a>
+            <li class="pageLink" onclick="handleOptionClick('add_result')">
+                <a>Add Results </a>
             </li>
-            <li class="pageLink">
-                <a onclick="handleOptionClick('view_result')">View Results</a>
+            <li class="pageLink" onclick="handleOptionClick('view_result')">
+                <a>View Results</a>
             </li>
-
-
         </ul>
     </aside>
-    <br>
-    <div class="table-title">
-        <h3>View Course Info</h3>
-    </div>
-    <br> <br>
 
     <table class="table-fill">
         <thead>
