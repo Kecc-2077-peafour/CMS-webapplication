@@ -39,11 +39,11 @@ def addresult_view(request, semester, batch, faculty, exam_type):
         print(faculty)
         print(batch)
         print(exam_type)
-        total_students = Student.objects.filter(
-            semester=semester,
-            faculty__name=faculty,
-            batch=batch
-        ).count()
+        # total_students = Student.objects.filter(
+        #     semester=semester,
+        #     faculty__name=faculty,
+        #     batch=batch
+        # ).count()
 
         existing_marks = Marks.objects.filter(
             student__semester=semester,
@@ -51,23 +51,19 @@ def addresult_view(request, semester, batch, faculty, exam_type):
             student__batch=batch,
             exam_type=exam_type
         )
-        print(total_students,'are the studnets')
-        print('there are',existing_marks.count(),'existing marks')
-        # If there are existing entries, return a JSON response
-        if existing_marks.count() == total_students:
+        if existing_marks.exists():
             print('duplicate entryy')
             redirect_message = 'Duplicate marks cannot be submitted. Please review and correct your entries.'
             redirect_url = reverse('examsection_view') + f'?redirect_message={redirect_message}'
             return redirect(redirect_url)
-        if existing_marks.count() < total_students:
-            context = {
+        context = {
                 'admin_instance': admin_instance,
                 'semester': semester,
                 'batch': batch,
                 'faculty': faculty,
                 'exam_type': exam_type,
             }
-            return render(request, 'examsection/add_result.html', context)
+        return render(request, 'examsection/add_result.html', context)
 
 @login_required
 def submit_result_file(request):
