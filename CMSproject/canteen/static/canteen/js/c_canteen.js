@@ -74,10 +74,12 @@ function getCookie(name) {
 
 function orderItem(button) {
     console.log('customer just ordered');
+    console.log(button.parentElement.parentElement.parentElement);
+    currentItem=button.parentElement.parentElement.parentElement;
     var quantity = document.getElementById("quantityInput").value;
-    var itemName = button.parentElement.getElementsByClassName('itemName')[0].innerText;
-    var itemImage = button.parentElement.querySelector('img').src;
-    var itemId = button.parentElement.dataset.itemId; // assuming the dataset is on the parent element
+    var itemName = currentItem.getElementsByClassName('itemName')[0].innerText;
+    var itemImage = currentItem.parentElement.querySelector('img').src;
+    var itemId = currentItem.dataset.itemId; // assuming the dataset is on the parent element
     var customerID = button.dataset.customerId;
     var customerName = button.dataset.customerName;
     var customerImage = button.dataset.customerImage;
@@ -95,45 +97,29 @@ function orderItem(button) {
             customerImage: customerImage,
             createdAt: created_at
         };
+        var csrfToken = getCookie('csrftoken');
+        fetch(orderurl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({
+                orderDetails: orderDetails,
+            }),
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Order placed');
 
-        // Display the order details in the frontend
-        var orderInfo = document.createElement('div');
-        orderInfo.classList.add('orders');
-        orderInfo.innerHTML = `
-            <p>Order: ${itemName}</p>
-            <img src="${itemImage}" alt="${itemName} Image">
-            <p>Quantity: ${quantity}</p>
-            <p>Created At: ${created_at}</p>
-            <p>Customer: ${customerName}</p>
-            <img src="${customerImage}" alt="${customerName} Image">
-            <p>User Type: student</p>
-            <button onclick="confirmOrder(${JSON.stringify(orderDetails)})">Confirm Order</button>
-            <button onclick="rejectOrder(${orderDetails})">Reject Order</button>
-        `;
-
-        var displayOrder = document.getElementById('displayOrder');
-        displayOrder.appendChild(orderInfo);
+            } else {
+                alert(`order could not be placed`);
+            }
+        });
         closePopup();
     } else {
         toastr.error('Please enter a valid quantity.');
     }
-}
-
-function confirmOrder(orderDetails){
-    console.log('staff clicked confirmed the order');
-    fetch(orderurl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            orderDetails: JSON.parse(orderDetails),
-            status:'in-progress'
-        }),
-    })
-    .then(response => {
-        //reload the page 
-    })
 }
 
 function closePopup(){

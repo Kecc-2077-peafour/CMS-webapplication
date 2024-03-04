@@ -14,7 +14,15 @@ def validate_user_type(value):
                 _('%(value)s is not a valid user type. Allowed types are student, teacher, and admin.'),
                 params={'value': value},
             )
+class Notification(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_seen = models.BooleanField(default=False)
 
+    def __str__(self) -> str:
+        return self.title
+    
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, usertype=None, **extra_fields):
         if not email:
@@ -86,6 +94,8 @@ class Student(models.Model):
     semester = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10)])
     faculty=models.ForeignKey(Faculty, on_delete=models.DO_NOTHING)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    notifications = models.ManyToManyField(Notification, related_name='studnet_notifications')
+
     def __str__(self):
         return f"{self.faculty} - {self.name}-{self.semester}"
 
@@ -95,6 +105,7 @@ class Teacher(models.Model):
     name = models.CharField(max_length=100)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     subject =models.ManyToManyField(Subject)
+    notifications = models.ManyToManyField(Notification, related_name='teacher_notifications')
 
     def __str__(self):
         return f"{self.subject}-{self.name}"
@@ -105,6 +116,7 @@ class Admin(models.Model):
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=20)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    notifications = models.ManyToManyField(Notification, related_name='admin_notifications')
 
 
     def __str__(self):
@@ -151,6 +163,7 @@ class Order(models.Model):
         choices=[
             ('in-progress', 'In-Progress'),
             ('completed', 'Completed'),
+            ('pending', 'Pending'),
         ],
         default='pending',
     )

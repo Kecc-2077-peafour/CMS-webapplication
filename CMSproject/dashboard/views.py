@@ -138,5 +138,16 @@ def viewmyResult_view(request):
             }
 
             return JsonResponse (context)
+        
+def handle_teacher_view_result_submission(request):
+    user_role = request.session.get('user_role', None)
+    return('sucess')
 
+def handle_teacher_add_result_submission(request):
+    user_role = request.session.get('user_role', None)
+    return('sucess')
+def addResult_view(request):
+    return('success')
 
+def viewResult_view(request):
+    return('okayy')

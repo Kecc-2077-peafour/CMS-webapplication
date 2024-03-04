@@ -108,7 +108,7 @@
                 </div>
 
                 <div class="button-container">
-                    <button type="button" onclick="applyFilters()">Go</button>
+                    <button id="goButton" type="button" onclick="applyFilters()">Go</button>
                 </div>
             </form>
         </div>
@@ -117,19 +117,23 @@
         <div class="dashboard-bar">
             <h1></h1>
         </div>
-
         <div class="icons">
            <!-- Add onclick attribute to each icon -->
-<a href="#" class="icon" id="totalStudentsIcon" onclick="openFilterModal()">
-<i class="fas fa-laptop fa-7x"></i>
-<p style="font-size: 1.6em;">View result</p>
-</a>
-<a href="#" class="icon" id="totalStudentsIcon" onclick="openFilterModal()">
-    <i class="fas fa-chalkboard-teacher fa-7x"></i>
-    <p style="font-size: 1.6em;">Add result</p>
-    </a>
-
-
+            <a class="icon" id="totalStudentsIcon" onclick="handleOptionClick('teacher_view_result')">
+                <i class="fas fa-laptop fa-7x"></i>
+                <p style="font-size: 1.6em;">View result</p>
+            </a>
+            <a class="icon" id="totalStudentsIcon" onclick="handleOptionClick('teacher_add_result')">
+                <i class="fas fa-chalkboard-teacher fa-7x"></i>
+                <p style="font-size: 1.6em;">Add result</p>
+            </a>
+        </div>
+    </div>
+    <script>
+        var teacherviewResultUrl = " {% url 'handle_teacher_view_result' %} ";
+        var teacheraddResultUrl = " {% url 'handle_teacher_add_result' %} ";
+    </script>
     <script src="{% static 'examsection/js/exam.js' %}"></script>
+    <script src="{% static 'examsection/js/view.js' %}"></script>
 </body>
 </html>

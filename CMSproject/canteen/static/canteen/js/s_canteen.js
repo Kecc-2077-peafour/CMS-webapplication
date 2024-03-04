@@ -1,4 +1,4 @@
-const aside = document.getElementsByClassName("aside")[0];
+    const aside = document.getElementsByClassName("aside")[0];
 const main = document.getElementsByClassName("main")[0];
 const navbarHeight = document.getElementsByClassName("navbar")[0].clientHeight;
 const windowHeight = window.innerHeight;
@@ -27,22 +27,24 @@ function showProfileOptions(){
         profileOptions.style.display = 'none';
     }
 }
- var box = document.getElementById('batta');
- var down = false;
- function togglenoti()
- {
-    if(down){
-       box.style.height = '0px';
-       box.style.opacity = 0;
-       down = false; 
-    }
-    else{
-        box.style.opacity=1;
-        down = true;
-        box.style.height = '400px';
-
-    }
- }
+//  var box = document.getElementById('batta');
+var down = false;
+function togglenoti(boxId) {
+   var box = document.getElementById(boxId);
+   if (box) {
+       if (down) {
+           box.style.height = '0px';
+           box.style.opacity = 0;
+           down = false;
+       } else {
+           box.style.opacity = 1;
+           down = true;
+           box.style.height = '400px';
+       }
+   } else {
+       console.error("Notification box not found.");
+   }
+}
 
 function addmenuItem() {
     console.log('retriving the addded data menu');
@@ -181,11 +183,5 @@ function deleteItem(button, url) {
     });
 }
 
-// function orderItem(button) {
-//     // add your ordering logic here
-//     var itemName = button.parentNode.querySelector(".itemName").innerText;
-//     var itemPrice = button.parentNode.querySelector(".itemPrice").innerText;
 
-//     toastr.success(`Ordered ${itemName} for ${itemPrice}`, 'Order Placed');
-// } 
 

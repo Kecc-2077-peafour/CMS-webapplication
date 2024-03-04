@@ -14,19 +14,21 @@
 
     <title>Orders</title>
     <style>
-    .orders{
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
-    padding: 5px;
-    background-color: #a7b9c6;
-    width:40%;
-    border-radius: 10%;
-    height: 200px;
-    align-items: center;
-    justify-content: space-around;
-    }
-
+        .orders{
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            padding: 5px;
+            background-color: #a7b9c6;
+            width:40%;
+            border-radius: 10%;
+            height: fit-content;
+            align-items: center;
+            justify-content: space-around;
+        }
+        #displayOrder{
+            display: flex;
+        }
     </style>
 </head>
 <body>
@@ -91,9 +93,9 @@
         <div class="top">
             <h2>CANTEEN</h2>
             <div class="notice">
-            <div class="notification" onclick="togglenoti()">
-                <img height="40px" width="40px" src="/media/bell.png" alt=""><span class="span" >2</span>
-            </div>
+                <div class="notification" onclick="togglenoti('batta')">
+                    <img height="40px" width="40px" src="/media/bell.png" alt=""><span class="span">2</span>
+                </div>
                 <div class="not-box" id="batta">
                     <div class="text">
                         Lorem ipsum dolor sit amet 
@@ -108,25 +110,42 @@
             </div>
         </div>
         <input type="hidden" name="csrfmiddlewaretoken" value="{% csrf_token %}">
-        <div class="orders" id="displayOrder">
+        <div id="displayOrder">
             {% for order in order_items %}
-                <p>Order: {{order.order.order_name.name}}</p>
-                <img src="{{order.order.order_name.image.url}}" alt="{{order.order.order_name.name}}Image">
-                <p>Quantity: {{order.order.quantity}}</p>
-                <p>Created At: {{order.order.created_at}}</p>
-                <p>Customer: {{order.order.customer_type}}</p> {% comment %}  hamle ahile customer ko naam naii display garya hai type vanera idk i ad something thought for it  {% endcomment %}
-                <img src="{{order.order.customer_img.url}}" alt=" {{order.order.customer_type}} Image">
-                <div>
-                    <button>order completed!</button>
+            {% if order.order.status == "pending" %}
+                <div class="orders">
+                    <p>Order: {{ order.order.order_name.name }}</p>
+                    <img height="50%" width="50%" src="{{ order.order.order_name.image.url }}" alt="{{ order.order.order_name.name }} Image">
+                    <p>Quantity: {{ order.order.quantity }}</p>
+                    <p>Created At: {{ order.order.created_at }}</p>
+                    <p>Customer: {{ order.customer_name }}</p>
+                    <img height="20%" width="20%" src="{{ order.customer_img }}" alt="{{ order.customer_name }} Image">
+                    <div>
+                        <button onclick="confirmOrder(this)" data-order-id="{{order.order.id}}">Confirm Order</button>
+                        <button onclick="rejectOrder()">Reject Order</button>
+                    </div>
                 </div>
+            {% endif %}
+            {% if order.order.status == "in-progress" %}
+                <div class="orders">
+                    <p>Order: {{ order.order.order_name.name }}</p>
+                    <img height="50%" width="50%" src="{{ order.order.order_name.image.url }}" alt="{{ order.order.order_name.name }} Image">
+                    <p>Quantity: {{ order.order.quantity }}</p>
+                    <p>Created At: {{ order.order.created_at }}</p>
+                    <p>Customer: {{ order.customer_name }}</p>
+                    <img height="20%" width="20%" src="{{ order.customer_img }}" alt="{{ order.customer_name }} Image">
+                    <div>
+                        <button>Order Completed!</button>
+                    </div>
+                </div>
+            {% endif %}
             {% endfor %}
         </div>
 
     </main>
     <script>
-        var orderurl = "{% url 'confirm_order' %}";
-    </script>
-     <script rc="{% static 'canteen/js/s_canteen.js' %}"></script> 
-    <script rc="{% static 'canteen/js/c_canteen.js' %}"></script>
+        var confirmOrderurl = "{% url 'order_confirmed' %}";
+    </script> 
+    <script src="{% static 'canteen/js/orders.js' %}"></script>
 </body>
 </html>

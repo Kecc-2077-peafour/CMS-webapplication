@@ -74,6 +74,7 @@ function handleOptionClick(option) {
     else {
         openFilterModal();
     }
+    console.log('yo chalxa ra?');
     document.getElementById('goButton').setAttribute('data-selected-option', selectedOption);
 }
 //GO button
@@ -104,9 +105,13 @@ function applyFilters() {
             console.log(courseInfoUrl);
             fetchcourseInfo(formData);
             break;
-        case 'studentResult':
+        case 'student_view_result':
             console.log(viewmyResultUrl);
             fetchstudentResult(formData);
+            break;
+        case 'teacher_add_result':
+            console.log(teacheraddUrl);
+            fetchteacheradd(formData);
             break;
     }
 }
@@ -261,6 +266,35 @@ function fetchstudentResult(formData){
         closeFilterModal();
     });
 }
+function fetchteacheradd(formData){
+    fetch(teacheraddResultUrl, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok){
+            console.log('unsucessful promise');
+            throw new Error(errorMessage);
+        }
+        else{
+            console.log('successful promise');
+            return response.json();
+        }
+    })
+    .then(data => {
+        console.log(data);
+        var successMessage = 'Adding result of ' + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty + 'subject:' + data.data.subject_Name;
+        console.log(successMessage);
+        window.location.href =`/examsection/addresult/${data.data.semester}/${data.data.batch_number}/${data.data.faculty}/${data.data.subject_Name}/`;
+    })
+    .catch(error => {
+        toastr.warning(error);
+        closeFilterModal();
+    })
+    .finally(() => {
+        closeFilterModal();
+    });
+}  
 
 //COOKIESSSS
 function getCookie(name) {
@@ -299,6 +333,7 @@ function get_filter_metadata() {
     var semester = document.getElementById('semester');
     var examType = document.getElementById('type');
     var batchNumber = document.getElementById('batchNumber');
+    var subjectName = document.getElementById('subjectName');
 
     var filterData = {};
 
@@ -316,6 +351,9 @@ function get_filter_metadata() {
 
     if (batchNumber && batchNumber.value != null && batchNumber.value.trim() !== "") {
         filterData.batch_number = batchNumber.value;
+    }
+    if (subjectName && subjectName.value != null && subjectName.value.trim() !== "") {
+        filterData.subject_Name = subjectName.value;
     }
     console.log('this is the filter form data returned:', filterData);
     if (Object.keys(filterData).length > 0) {

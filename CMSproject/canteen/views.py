@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from core.models import Student, Teacher, Admin, Order, MenuItem
+from core.models import Student, Teacher, Admin, Order, MenuItem , Notification
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -64,11 +64,15 @@ def orders_view(request):
             customer = order.customer
             try:
                 if customer.usertype == 'student':
-                    customer_instance = customer.student
-                    customer_img = customer_instance.profile_picture.url
+                    student_instance = Student.objects.get(user=customer)
+                    customer_img = student_instance.profile_picture.url
+                    customer_name = student_instance.name
+                    print(customer_name)
                 elif customer.usertype == 'teacher':
-                    customer_instance = customer.teacher
-                    customer_img = customer_instance.profile_picture.url
+                    teacher_instance = Teacher.objects.get(user=customer)
+                    customer_img = teacher_instance.profile_picture.url
+                    customer_name = teacher_instance.name
+                    print(customer_name)
                 else:
                     raise Http404("User not found")
             except (Student.DoesNotExist, Teacher.DoesNotExist):
@@ -77,8 +81,8 @@ def orders_view(request):
             order_data.append({
                 'order': order,
                 'customer_img': customer_img,
+                'customer_name': customer_name,
             })
-
         context = {'admin_instance': user.admin, 'order_items': order_data}
         return render(request, 'canteen/orders.html', context)
     else:
@@ -150,19 +154,12 @@ def delete_specialItem(request):
     
     return JsonResponse({'message': 'Item deleted successfully'})
 
-def confirm_order(request):
+def get_order(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         order_details = data.get('orderDetails')
-        status = data.get('status')
-
-        # Assuming 'itemId' is the unique identifier for MenuItem
         menu_item = MenuItem.objects.get(id=order_details['itemId'])
-
-        # Assuming 'studentID' is the ID of a specific Student
-        student = Student.objects.get(id=order_details['customerID'])
-        
-        # Retrieve the associated CustomUser instance through the student field
+        student = Student.objects.get(student_id=order_details['customerID'])
         customer = student.user
 
         # Create a new order in your database
@@ -171,7 +168,36 @@ def confirm_order(request):
             order_name=menu_item,
             quantity=order_details['quantity'],
             created_at=order_details['createdAt'],
-            status=status,
         )
+        order.save()
+        staff_admins = Admin.objects.filter(role='staff')
+        notification = Notification.objects.create(
+            title="New Order",
+            content="Please reload the page to view the order."
+        )
+        for staff_admin in staff_admins:
+            staff_admin.admin_notifications.add(notification)
 
-        return JsonResponse({'message': 'Order confirmed successfully'})
+        return JsonResponse({'message': 'success'})
+    return JsonResponse({'message': 'Invalid request method'}, status=405)
+
+def confirm_order(request):
+    print('confirm order is called')
+    if request.method == 'POST':
+        try:
+            # Parse the JSON data from the request body
+            data = json.loads(request.body.decode('utf-8'))
+            # Extract order_id and status from the received data
+            order_id = data.get('order_id')
+            new_status = data.get('status')
+            # Retrieve the order from the database
+            order = get_object_or_404(Order, id=order_id)
+            print('new:old',new_status,order.status)
+            # Update the status of the order
+            order.status = new_status
+            order.save()
+
+            return JsonResponse({'success': True, 'message': 'Order confirmed successfully'})
+        except Order.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Order not found'})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
