@@ -85,9 +85,11 @@ function applyFilters() {
     console.log('Filter Metadata:', filterMetadata);
     Object.entries(filterMetadata).forEach(([key, value]) => {
         formData.append(key, value);
-        console.log('yo bhitra wala form', formData);
     });
-    console.log('appened the datas from filter',formData);
+    console.log('FormData Entries:');
+    for (const [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+}
     // Add CSRF token to the headers
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     switch (selectedOption) {
@@ -239,31 +241,36 @@ function fetchstudentResult(formData){
         body: formData,
     })
     .then(response => {
-        if (!response.ok) {
-            console.log('unsucessful promise');
-            location.reload();
+        if(!response.ok){
+            console.log('Unsuccessful promise');
+            return response.json();
         }
-        console.log('sucessful promise');
-        return response.json();
+        else if (response.ok){
+            console.log('successful promise');
+            return response.json();
+        }
     })
     .then(data => {
         console.log(data);
-        var successMessage = 'showing result of ' + data.data.exam_type + ' batch: ' + ', sem: ' + data.data.semester ;
-        console.log(successMessage);
-        let url = '/dashboard/student/viewmyResult/?';
-        if (data.data.semester) {
-            url += `semester=${data.data.semester}&`;
-        }
-        if (data.data.exam_type) {
-            url += `faculty=${data.data.exam_type}&`;
-        }
-        // Remove the trailing "&" if present
-        url = url.slice(0, -1);
-        console.log('Redirecting to:', url);
-        window.location.href = url          
-    }) 
-    .finally(() => {
-        closeFilterModal();
+        if (data.success) {
+            var successMessage = 'showing result of ' + data.data.exam_type + ', sem: ' + data.data.semester;
+            console.log(successMessage);
+            let url = '/dashboard/student/viewmyResult/?';
+            if (data.data.semester) {
+                url += `semester=${data.data.semester}&`;
+            }
+            if (data.data.exam_type) {
+                url += `exam_type=${data.data.exam_type}&`;
+            }
+            // Remove the trailing "&" if present
+            url = url.slice(0, -1);
+            console.log('Redirecting to:', url);
+            window.location.href = url; 
+        }   
+        else {
+            console.error('Error:', data.error);
+            alert(data.error);
+        }      
     });
 }
 function fetchteacheradd(formData){
