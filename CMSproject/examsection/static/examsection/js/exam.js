@@ -102,6 +102,8 @@ function applyFilters() {
             fetchViewResult(formData);
             break;
         case 'student_analysis':
+            console.log(studentAnalysisUrl);
+            fetchStudnetAnalysis(formData);
             break;
         case 'course_Info':
             console.log(courseInfoUrl);
@@ -353,6 +355,53 @@ function fetchteacherview(formData){
             console.error('Error:', data.error);
             alert(data.error);
         }      
+    })
+    .finally(() => {
+        closeFilterModal();
+    });
+}
+function fetchStudnetAnalysis(formData){
+    fetch(viewResultUrl, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.log('unsucessfull promise');
+            throw new Error('Network response was not ok');
+        }
+        console.log('successful promise');
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        var successMessage = 'showing result of ' + data.data.exam_type + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
+        console.log(successMessage);
+        let url = '/examsection/studentanalysis/?';
+        if (data.data.semester) {
+            url += `semester=${data.data.semester}&`;
+        }
+        if (data.data.batch_number !== null) {
+            url += `batch=${data.data.batch_number}&`;
+        }
+        if (data.data.faculty) {
+            url += `faculty=${data.data.faculty}&`;
+        }
+        if (data.data.exam_type) {
+            url += `exam_type=${data.data.exam_type}&`;
+        }
+        // Remove the trailing "&" if present
+        url = url.slice(0, -1);
+        console.log('Redirecting to:', url);
+        window.location.href = url;          
+    }) 
+    .catch(error => {
+        if (error.response && error.response.data && error.response.data.errors) {
+            console.error('Validation Errors:', error.response.data.errors);
+        } else {
+            console.error('Fetch error:', error);
+        }
+        closeCourseModal();  // Close the modal in either case
     })
     .finally(() => {
         closeFilterModal();

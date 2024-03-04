@@ -10,6 +10,7 @@
     <!-- Include Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/view.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
@@ -74,36 +75,27 @@
         
         </ul>
     </aside>
-    {% for semester in distinct_semesters %}
-    <h2>Semester {{ semester }}</h2>
-    <table class="table-fill">
+    <h2>Results for {{ student_instance.name }}</h2>
+
+    {% for result_group in organized_results %}
+    <h3>Semester: {{ result_group.semester }}</h3>
+    <table id="table-fill" class="table-fill">
         <thead>
             <tr>
-                {% for subject_result in organized_results %}
-                    {% if subject_result.student.semester == semester %}
-                        {% for subject in subject_result.subjects %}
-                            {% if forloop.first %}
-                                <th class="text-left">{{ subject.subject.name }}</th>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
+                <th>Subject</th>
+                <th>Obtained Marks</th>
             </tr>
         </thead>
         <tbody>
-            {% for student_result in organized_results %}
-                {% if student_result.student.semester == semester %}
-        <tr>
-            <td>{{ student_result.student.rollNo }}</td>
-            <td>{{ student_result.student.name }}</td>
-            {% for subject_result in student_result.subjects %}
-                <td>{{ subject_result.obtained_marks }}</td>
+            {% for subject_data in result_group.subjects %}
+                <tr>
+                    <td>{{ subject_data.subject_name }}</td>
+                    <td>{{ subject_data.obtained_marks }}</td>
+                </tr>
             {% endfor %}
-        </tr>
-    {% endif %}
-{% endfor %}
         </tbody>
     </table>
 {% endfor %}
+
 </body>
 </html>

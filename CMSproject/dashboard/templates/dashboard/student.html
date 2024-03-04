@@ -112,38 +112,6 @@
         <i class="fas fa-laptop fa-10x"></i>
         <p style="font-size: 2em;">View your result</p>
     </a>
-    {% for semester in distinct_semesters %}
-    <h2>Semester {{ semester }}</h2>
-
-    <table class="table-fill">
-        <thead>
-            <tr>
-                {% for subject_result in organized_results %}
-                    {% if subject_result.student.semester == semester %}
-                        {% for subject in subject_result.subjects %}
-                            {% if forloop.first %}
-                                <th class="text-left">{{ subject.subject.name }}</th>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for student_result in organized_results %}
-                {% if student_result.student.semester == semester %}
-        <tr>
-            <td>{{ student_result.student.rollNo }}</td>
-            <td>{{ student_result.student.name }}</td>
-            {% for subject_result in student_result.subjects %}
-                <td>{{ subject_result.obtained_marks }}</td>
-            {% endfor %}
-        </tr>
-    {% endif %}
-{% endfor %}
-        </tbody>
-    </table>
-{% endfor %}
 <script>
     var viewmyResultUrl = " {% url 'handle_viewmy_result_submission' %} ";
 </script>

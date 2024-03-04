@@ -95,7 +95,7 @@ def editresult_view(request):
                 # Check if present_data is within valid range
                 if 0 <= present_data <=float( marks_instance.subject.full_marks):
                     marks_instance.obtained_marks = present_data
-                    marks_instance.marks_updated_by=admin_instance
+                    marks_instance.marks_updated_by=user
                     marks_instance.save()
                 else:
                     response_data = {'success': False, 'message': 'Invalid Data: Please enter valid data'}

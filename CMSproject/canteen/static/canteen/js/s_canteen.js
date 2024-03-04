@@ -156,6 +156,9 @@ function AddToSpecial(button) {
 }
 
 function deleteItem(button, url) {
+    if (!confirm('Are you sure you want to delete this item?')) {
+        return; // Do nothing if user cancels
+    }
     console.log('deleting the menu');
     var item = button.parentNode;
     var itemID = item.dataset.itemId;

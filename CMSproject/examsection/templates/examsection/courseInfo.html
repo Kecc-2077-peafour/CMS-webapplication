@@ -200,7 +200,13 @@
 </div>
 
 </div>
-    <script src="{% static 'examsection/js/view.js' %}"></script>
+<script>
+    var addResultUrl = "{% url 'handle_add_result_submission' %}";
+    var viewResultUrl = "{% url 'handle_view_result_submission' %}";
+    var courseInfoUrl = "{% url 'handle_course_Info_submission' %}";
+    var studentAnalysisUrl = "{% url 'handle_student_analysis_submission' %}";
+</script>
     <script src="{% static 'examsection/js/exam.js' %}"></script>
+    <script src="{% static 'examsection/js/view.js' %}"></script>
 </body>
 </html>

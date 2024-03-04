@@ -71,76 +71,53 @@ def handle_viewmy_result_submission(request):
             return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=500)
 
 def viewmyResult_view(request):
-    print('to print my own damn result')
     user_role = request.session.get('user_role', None)
+    
     if user_role == 'student':
-        print('authenticated right')
         user = request.user 
         student_instance = user.student
-    
+
         params = QueryDict(request.GET.urlencode())
         semester = params.get('semester')
         exam_type = params.get('exam_type')
-        print(semester, exam_type)
-        
-        current_semester = student_instance.semester
-        print('current semester type:', type(current_semester),current_semester)
-        print('semester type:', type(semester),semester)
+
+        query_params = {'student': student_instance, 'exam_type': exam_type}
 
         if semester is not None:
-            print('semester is not none')
-            semesters = [int(current_semester)]
-            query_params = {'student__semester': current_semester, 'exam_type': exam_type}
+            # If semester is provided, filter results for that semester only
+            query_params['student__semester'] = semester
             results = Marks.objects.filter(**query_params)
-            print('query haru we got')
-            results_by_student = {}
-            for result in results:
-                student_id = result.student.student_id
-                if student_id not in results_by_student:
-                    results_by_student[student_id] = {'student': result.student, 'subjects': []}
-                results_by_student[student_id]['subjects'].append(result)
-            print('filter vayo?')
-
-            # Convert the dictionary values to a list for easier iteration in the template
-            organized_results = list(results_by_student.values())
-            for result in organized_results:
-                print(result)
-            print('context pass vaxa')
-            context = {
-                'student_instance': student_instance,
-                'distinct_semesters': semesters,
-                'exam_type': exam_type,
-                'organized_results': organized_results,
-            }
-            return render(request, 'dashboard/student_view_result.html', context)
-        elif semester is None:
-            print('semester is none')
+            distinct_semesters = [int(semester)]
+        else:
             # If semester is None, fetch distinct semester values for the student
             distinct_semesters = Marks.objects.filter(student=student_instance).values_list('student__semester', flat=True).distinct()
-
-            # Fetch and organize results for all semesters from 1 to the current semester
-            query_params = {'student__semester__in': range(1, current_semester + 1), 'exam_type': exam_type}
+            # Remove semester filter for fetching all results
+            query_params.pop('student__semester', None)
             results = Marks.objects.filter(**query_params)
-            print('got the quesry')
-            results_by_student = {}
-            for result in results:
-                student_id = result.student.student_id
-                if student_id not in results_by_student:
-                    results_by_student[student_id] = {'student': result.student, 'subjects': []}
-                results_by_student[student_id]['subjects'].append(result)
-            print('filter vayo')
-            # Convert the dictionary values to a list for easier iteration in the template
-            organized_results = list(results_by_student.values())
-            for result in organized_results:
-                print(result)
-            print('context pass vaxa')
-            context = {
-                'student_instance': student_instance,
-                'exam_type': exam_type,
-                'organized_results': organized_results,
-                'distinct_semesters': distinct_semesters,
-            }
-            return render(request, 'dashboard/student_view_result.html', context) 
+
+        print('Filtered Results:')
+        for result in results:
+            print(f'Student Name: {result.student.name}, Subject: {result.subject.name}, Obtained Marks: {result.obtained_marks}')
+
+        results_by_semester = {}
+        for result in results:
+            sem = student_instance.semester
+            if sem not in results_by_semester:
+                results_by_semester[sem] = {'semester': sem, 'subjects': []}
+
+            results_by_semester[sem]['subjects'].append({'subject_name': result.subject.name, 'obtained_marks': result.obtained_marks})
+
+        # Convert the dictionary values to a list for easier iteration in the template
+        organized_results = list(results_by_semester.values())
+
+        context = {
+            'student_instance': student_instance,
+            'exam_type': exam_type,
+            'organized_results': organized_results,
+            'distinct_semesters': distinct_semesters,
+        }
+
+        return render(request, 'dashboard/student_view_result.html', context)
         
 def handle_teacher_view_result_submission(request):
     user_role = request.session.get('user_role', None)

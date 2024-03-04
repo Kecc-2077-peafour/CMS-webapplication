@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Result</title>
+    <title>Examination Management System</title>
+    <!-- Include Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
@@ -20,15 +21,18 @@
 </head>
 
 <body>
-
     <nav class="navbar">
         <picture class="logoContainer">
             <img src="/media/collegeLogo.png" alt="logo">
         </picture>
-        {% comment %} <input type="text" class="searchInput" placeholder="Search..." onkeyup="search()"> {% endcomment %}
+        {% comment %} <div class="searchContainer">
+            <input type="text" placeholder="Search...">
+            <button class="search_button">
+            </button>
+        </div> {% endcomment %}
         <div class="userProfileContainer" onclick="showProfileOptions()">
             <img src="{{ admin_instance.profile_picture.url }}" alt="profilePic" class="profilePic">
-            <div class="fullName" style="font-size: 1.2rem;">{{ admin_instance.name }} </div>
+            <div class="fullName" style="font-size: 1.2rem;">{{ admin_instance.name }}</div>
             <div class="profileOptions">
                 <ul>
                     <li>
@@ -46,54 +50,26 @@
                 </ul>
             </div>
         </div>
-    </nav>
-
-    <aside class="aside">
+    </nav> 
+     <aside class="aside">
         <ul class="pageLinks">
-            <li class="pageLink" onclick="handleOptionClick('home')">
-                <a href="{% url 'examsection_view' %}">Home</a>
+            <li class="pageLink" onclick="window.location.href='{% url 'examsection_view' %}'">
+                Home
             </li>
             <li class="pageLink" onclick="handleOptionClick('student_analysis')">
-                <a>Student Analysis</a>
+                Student Analysis
             </li>
             <li class="pageLink" onclick="handleOptionClick('course_Info')">
-                <a>Course Info </a>
+                Course Info
             </li>
             <li class="pageLink" onclick="handleOptionClick('add_result')">
-                <a>Add Results </a>
+                Add Results
             </li>
             <li class="pageLink" onclick="handleOptionClick('view_result')">
-                <a>View Results</a>
+                View Results
             </li>
         </ul>
     </aside>
-
-
-    <table id="table-fill" class="table-fill">
-        <thead>
-            <tr>
-                <th class="text-left">Roll No.</th>
-                <th class="text-left">Student Name</th>
-                {% for subject_result in results.0.subjects %}
-                    <th class="text-left">{{ subject_result.subject.name }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody class="table-hover">
-            {% for student_result in results %}
-                <tr>
-                    <td class="text-left">{{ student_result.student.rollNo }}</td>
-                    <td class="text-left" data-student-id="{{ student_result.student.student_id }}">{{ student_result.student.name }}</td>
-                    {% for subject_result in student_result.subjects %}
-                        <td class="text-left" data-original-value="{{ subject_result.obtained_marks }}"
-                        data-subject-id="{{ subject_result.subject.id }}" data-marks-id="{{ subject_result.id }}" >{{ subject_result.obtained_marks }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %} 
-        </tbody>
-    </table>
-    <button class="saveButton" onclick="saveData()">Save Data</button>
-    <button class="editButton" onclick="enableEditing()">Edit</button>
     
     <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div>
 
@@ -140,48 +116,92 @@
             </form>
         </div>
     </div>
-    <!-- Another Modal for Courses -->
     <div id="filter" onclick="openCourseModal()">🔍 Filter</div>
-<div id="courseModal" class="modal">
-    <div class="modal-content">
-        <h2>Course Information</h2>
-        <form method="POST" id="courseForm">
-            {% csrf_token %}
-            <label for="courseFaculty">Select Faculty:</label>
-            <select id="courseFaculty" name="courseFaculty">
-                <option value="Computer">Computer</option>
-                <option value="Civil">Civil</option>
-                <option value="Architecture">Architecture</option>
-                <option value="Electrical">Electrical</option>
-                <option value="Electronics">Electronics</option>
-            </select>
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <h2>Course Information</h2>
+            <form method="POST" id="courseForm">
+                {% csrf_token %}
+                <label for="courseFaculty">Select Faculty:</label>
+                <select id="courseFaculty" name="courseFaculty">
+                    <option value="Computer">Computer</option>
+                    <option value="Civil">Civil</option>
+                    <option value="Architecture">Architecture</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Electronics">Electronics</option>
+                </select>
+    
+                <label for="courseSemester">Select Semester:</label>
+                <select id="courseSemester" name="courseSemester">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+    
+                <div class="button-container">
+                    <button id="goButton" type="button" onclick="applyFilters()">Go</button>
+                </div>
+            </form>
+        </div>
+    </div> 
+    <h3>Student-wise Analysis</h3>
+    <table id="table-fill" class="table-fill">
+        <thead>
+            <tr>
+                <th>Roll No</th>
+                <th>Student Name</th>
+                <th>Pass Ratio</th>
+                <th>Fail Ratio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student_percentage in student_percentages %}
+        <tr>
+            <td>{{ student_percentage.student_obj.rollNo }}</td>
+            <td>{{ student_percentage.student_obj.name }}</td>
+            <td>{{ student_percentage.pass_percentage }}%</td>
+            <td>{{ student_percentage.fail_percentage }}%</td>
+        </tr>
+    {% endfor %}
+            <tr>
+                <td colspan="2"><strong>Total</strong></td>
+                <td>{{ total_pass_percentage }}%</td>
+                <td>{{ total_fail_percentage }}%</td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>Subject-wise Analysis</h3>
+        <table id="table-fill" class="table-fill">
+            <thead>
+                <tr>
+                    <th>Subject Name</th>
+                    <th>Pass Ratio</th>
+                    <th>Fail Ratio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subject_percentage in subject_percentages %}
+        <tr>
+            <td>{{ subject_percentage.subject_obj.name }}</td>
+            <td>{{ subject_percentage.pass_percentage }}%</td>
+            <td>{{ subject_percentage.fail_percentage }}%</td>
+        </tr>
+    {% endfor %}
 
-            <label for="courseSemester">Select Semester:</label>
-            <select id="courseSemester" name="courseSemester">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-            </select>
-
-            <div class="button-container">
-                <button id="goButton" type="button" onclick="applyFilters()">Go</button>
-            </div>
-        </form>
-    </div>
-</div>
+            </tbody>
+        </table>        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
-        var editresultUrl = "{% url 'edit_result' %}";
         var addResultUrl = "{% url 'handle_add_result_submission' %}";
         var viewResultUrl = "{% url 'handle_view_result_submission' %}";
         var courseInfoUrl = "{% url 'handle_course_Info_submission' %}";
         var studentAnalysisUrl = "{% url 'handle_student_analysis_submission' %}";
     </script>
-    <script src="{% static 'examsection/js/exam.js' %}"></script>
     <script src="{% static 'examsection/js/exam.js' %}"></script>
 </body>
 </html>

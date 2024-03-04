@@ -197,6 +197,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
     
     <!-- Include your custom exam.js file -->
+    <script>
+        var addResultUrl = "{% url 'handle_add_result_submission' %}";
+        var viewResultUrl = "{% url 'handle_view_result_submission' %}";
+        var courseInfoUrl = "{% url 'handle_course_Info_submission' %}";
+        var studentAnalysisUrl = "{% url 'handle_student_analysis_submission' %}";
+    </script>
     <script src="{% static 'examsection/js/exam.js' %}"></script>
 </body>
 
