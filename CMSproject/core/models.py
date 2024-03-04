@@ -94,7 +94,7 @@ class Student(models.Model):
     semester = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10)])
     faculty=models.ForeignKey(Faculty, on_delete=models.DO_NOTHING)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-    notifications = models.ManyToManyField(Notification, related_name='studnet_notifications')
+    notifications = models.ManyToManyField(Notification, related_name='studnet_notifications',blank=True)
 
     def __str__(self):
         return f"{self.faculty} - {self.name}-{self.semester}"
@@ -105,7 +105,7 @@ class Teacher(models.Model):
     name = models.CharField(max_length=100)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     subject =models.ManyToManyField(Subject)
-    notifications = models.ManyToManyField(Notification, related_name='teacher_notifications')
+    notifications = models.ManyToManyField(Notification, related_name='teacher_notifications',blank=True)
 
     def __str__(self):
         return f"{self.subject}-{self.name}"
@@ -116,7 +116,7 @@ class Admin(models.Model):
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=20)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-    notifications = models.ManyToManyField(Notification, related_name='admin_notifications')
+    notifications = models.ManyToManyField(Notification, related_name='admin_notifications',blank=True)
 
 
     def __str__(self):
@@ -134,7 +134,7 @@ class Marks(models.Model):
     exam_type = models.CharField(max_length=10, choices=EXAM_TYPE_CHOICES)
     exam_date = models.DateField()
     marks_updated_at = models.DateTimeField(auto_now_add=True)
-    marks_updated_by = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True)
+    marks_updated_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
 
     @property
     def batch(self):

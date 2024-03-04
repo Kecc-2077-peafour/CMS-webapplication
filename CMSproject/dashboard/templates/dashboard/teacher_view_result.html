@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Management System</title>
+    <!-- Include Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <picture class="logoContainer">
+            <img src="/media/collegeLogo.png" alt="logo">
+        </picture>
+        {% comment %} <div class="searchContainer">
+            <input type="text" placeholder="Search...">
+            <button class="search_button">
+            </button>
+        </div> {% endcomment %}
+        {% comment %} <div class="userProfileContainer" onclick="showProfileOptions()">
+            <img src="{{teacher_instance.profile_picture.url}}" alt="profilePic" class="profilePic">
+            <div class="fullName" style="font-size: 1.2rem;">{{teacher_instance.name}}</div>
+            <div class="profileOptions">
+                <ul>
+                    <li>
+                        <a href="#">Account</a>
+                    </li>
+                    <li>
+                        <a href="#">Settings</a>
+                    </li>
+                    <li>
+                        <a href="#">Privacy</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav> {% endcomment %}
+    {% comment %} <aside class="aside">
+        <ul class="pageLinks">
+            <li class="pageLink">
+                <a href="{% url 's_dashboard' %}">Home</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Account</a>
+            </li>
+            <li class="pageLink">
+                <a href="{% url 'c_canteen'  %}">Canteen</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Student</a>
+            </li>
+            <li class="pageLink">
+                <a class="activePage" href="{% url 'teacher_view' %}">Exam</a>
+            </li>
+
+            <li class="pageLink">
+                <a href="#">Library</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Faculty</a>
+            </li>
+        
+        </ul>
+        <br> <br> <br> <br> <br> <br> <br> <br> <br><br> <br> <br> 
+    </aside> {% endcomment %}
+    <table id="table-fill" class="table-fill">
+        <thead>
+            <tr>
+                <th class="text-left">Roll No.</th>
+                <th class="text-left">Student Name</th>
+                {% for subject_result in results.0.subjects %}
+                    <th class="text-left">{{ subject_result.subject.name }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody class="table-hover">
+            {% for student_result in results %}
+                <tr>
+                    <td class="text-left">{{ student_result.student.rollNo }}</td>
+                    <td class="text-left" data-student-id="{{ student_result.student.student_id }}">{{ student_result.student.name }}</td>
+                    {% for subject_result in student_result.subjects %}
+                        <td class="text-left" data-original-value="{{ subject_result.obtained_marks }}"
+                        data-subject-id="{{ subject_result.subject.id }}" data-marks-id="{{ subject_result.id }}" >{{ subject_result.obtained_marks }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %} 
+        </tbody>
+    </table>
+    <script src="{% static 'examsection/js/view.js' %}"></script>
+</body>
+</html>

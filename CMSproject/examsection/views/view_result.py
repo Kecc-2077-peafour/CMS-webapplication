@@ -41,7 +41,7 @@ def viewresult_view(request):
         batch = params.get('batch',)
         faculty = params.get('faculty')
         exam_type = params.get('exam_type')
-
+        
         # Build the dynamic query based on the selected filters
         query_params = {}
         if semester is not None:

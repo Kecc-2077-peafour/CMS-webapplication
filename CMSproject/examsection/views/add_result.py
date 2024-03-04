@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from core.models import Student,Marks,Subject
+from core.models import Student,Marks,Subject,Facultysubject
 from django.views.decorators.http import require_POST
 from examsection.forms.add_result import FilterForm
 from django.views.decorators.csrf import csrf_protect
@@ -39,28 +39,35 @@ def addresult_view(request, semester, batch, faculty, exam_type):
         print(faculty)
         print(batch)
         print(exam_type)
+        total_students = Student.objects.filter(
+            semester=semester,
+            faculty__name=faculty,
+            batch=batch
+        ).count()
+
         existing_marks = Marks.objects.filter(
             student__semester=semester,
             student__faculty__name=faculty,
             student__batch=batch,
             exam_type=exam_type
         )
-
+        print(total_students,'are the studnets')
+        print('there are',existing_marks.count(),'existing marks')
         # If there are existing entries, return a JSON response
-        if existing_marks.exists():
+        if existing_marks.count() == total_students:
             print('duplicate entryy')
             redirect_message = 'Duplicate marks cannot be submitted. Please review and correct your entries.'
             redirect_url = reverse('examsection_view') + f'?redirect_message={redirect_message}'
             return redirect(redirect_url)
-            
-        context = {
-            'admin_instance': admin_instance,
-            'semester': semester,
-            'batch': batch,
-            'faculty': faculty,
-            'exam_type': exam_type,
-        }
-        return render(request, 'examsection/add_result.html', context)
+        if existing_marks.count() < total_students:
+            context = {
+                'admin_instance': admin_instance,
+                'semester': semester,
+                'batch': batch,
+                'faculty': faculty,
+                'exam_type': exam_type,
+            }
+            return render(request, 'examsection/add_result.html', context)
 
 @login_required
 def submit_result_file(request):
@@ -68,11 +75,6 @@ def submit_result_file(request):
     user_role = request.session.get('user_role', None)
     if user_role == 'admin':
         user = request.user
-        admin_instance = user.admin
-    # form = UploadResultForm(request.POST, request.FILES)
-    # if not form.is_valid():
-    #     errors = {field: form.errors[field][0] for field in form.errors}
-    #     return JsonResponse({'error': 'Form validation failed', 'errors': errors}, status=400)
     if request.method == 'POST':
         try:
             with transaction.atomic():
@@ -120,6 +122,12 @@ def submit_result_file(request):
                                 )
                                 
                                 subjects_instance = get_object_or_404(Subject, name = subject_name.lower())
+                                if not Facultysubject.objects.filter(
+                                    faculty__name=faculty,
+                                    semester=semester,
+                                    subject__name__iexact=subjects_instance.name.lower(),
+                                ).exists():
+                                    raise ValidationError(_('{} is not associated with the given faculty and semester',subjects_instance.name))
                                 subject_full_marks = subject_full_marks[0]
                                 obtained_marks = Decimal(data[roll_numbers_in_file.index(roll_number) + 1][i + 2]) 
                                 
@@ -132,7 +140,7 @@ def submit_result_file(request):
                                     obtained_marks=obtained_marks,
                                     exam_type=exam_type,
                                     exam_date=date.today(),
-                                    marks_updated_by=admin_instance,  
+                                    marks_updated_by=user,  
                                 )
             return JsonResponse({'message': 'Data saved successfully!'}, status=200)    
         except ValidationError as ve:

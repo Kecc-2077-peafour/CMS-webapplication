@@ -112,9 +112,12 @@ function applyFilters() {
             fetchstudentResult(formData);
             break;
         case 'teacher_add_result':
-            console.log(teacheraddUrl);
+            console.log(teacheraddResultUrl);
             fetchteacheradd(formData);
             break;
+        case 'teacher_view_result':
+            console.log(teacherviewResultUrl);
+            fetchteacherview(formData);
     }
 }
 function fetchAddResult(formData) {
@@ -271,6 +274,9 @@ function fetchstudentResult(formData){
             console.error('Error:', data.error);
             alert(data.error);
         }      
+    })
+    .finally(() => {
+        closeFilterModal();
     });
 }
 function fetchteacheradd(formData){
@@ -279,29 +285,79 @@ function fetchteacheradd(formData){
         body: formData,
     })
     .then(response => {
-        if (!response.ok){
-            console.log('unsucessful promise');
-            throw new Error(errorMessage);
+        if(!response.ok){
+            console.log('Unsuccessful promise');
+            return response.json();
         }
-        else{
+        else if (response.ok){
             console.log('successful promise');
             return response.json();
         }
     })
     .then(data => {
         console.log(data);
-        var successMessage = 'Adding result of ' + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty + 'subject:' + data.data.subject_Name;
-        console.log(successMessage);
-        window.location.href =`/examsection/addresult/${data.data.semester}/${data.data.batch_number}/${data.data.faculty}/${data.data.subject_Name}/`;
-    })
-    .catch(error => {
-        toastr.warning(error);
-        closeFilterModal();
+        if (data.success) {
+            var successMessage = 'Adding result of ' + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty + 'subject:' + data.data.subject_Name;
+            console.log(successMessage);
+            window.location.href =`/dashboard/teacher/addResult/${data.data.semester}/${data.data.batch_number}/${data.data.faculty}/${data.data.subject_Name}/`;
+        }
+        else {
+            console.error('Error:', data.error);
+            alert(data.error);
+        } 
     })
     .finally(() => {
         closeFilterModal();
     });
-}  
+} 
+function fetchteacherview(formData){
+    console.log('url yo:', teacherviewResultUrl) ;
+    fetch(teacherviewResultUrl, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if(!response.ok){
+            console.log('Unsuccessful promise');
+            return response.json();
+        }
+        else if (response.ok){
+            console.log('successful promise');
+            return response.json();
+        }
+    })
+    .then(data => {
+        console.log(data);
+        if (data.success) {
+            var successMessage = 'showing result of regular' + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty + 'subject:' + data.data.subject_Name;
+            console.log(successMessage);
+            let url = '/dashboard/teacher/viewResult/?';
+            if (data.data.semester) {
+                url += `semester=${data.data.semester}&`;
+            }
+            if (data.data.faculty) {
+                url += `exam_type=${data.data.faculty}&`;
+            }
+            if (data.data.batch) {
+                url += `exam_type=${data.data.batch}&`;
+            }
+            if (data.data.subject) {
+                url += `exam_type=${data.data.subject}&`;
+            }
+            // Remove the trailing "&" if present
+            url = url.slice(0, -1);
+            console.log('Redirecting to:', url);
+            window.location.href = url; 
+        }   
+        else {
+            console.error('Error:', data.error);
+            alert(data.error);
+        }      
+    })
+    .finally(() => {
+        closeFilterModal();
+    });
+}
 
 //COOKIESSSS
 function getCookie(name) {
@@ -445,7 +501,7 @@ function submitData(url) {
         var semester = document.getElementById('submitButton').getAttribute('data-semester');
         var batch = document.getElementById('submitButton').getAttribute('data-batch');
         var faculty = document.getElementById('submitButton').getAttribute('data-faculty'); 
-        var exam_type = document.getElementById('submitButton').getAttribute('data-exam_type'); 
+        var exam_type = document.getElementById('submitButton').getAttribute('data-exam_type'); //yesma admin bata huda exam_type nai aaunxa teacher bata huda subject ko value ho haiii: lazy broo
         console.log('we got the stupid data');
         fetch(url, {  
             method: 'POST',
@@ -458,7 +514,7 @@ function submitData(url) {
                 semester:semester,
                 batch:batch,
                 faculty:faculty,
-                exam_type:exam_type,
+                exam_type:exam_type,//yesma admin bata huda exam_type nai aaunxa teacher bata huda subject ko value ho haiii: lazy broo
             }),
         })
         .then(response => {

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Management System</title>
+    <!-- Include Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <picture class="logoContainer">
+            <img src="/media/collegeLogo.png" alt="logo">
+        </picture>
+        {% comment %} <div class="searchContainer">
+            <input type="text" placeholder="Search...">
+            <button class="search_button">
+            </button>
+        </div> {% endcomment %}
+        <div class="userProfileContainer" onclick="showProfileOptions()">
+            <img src="{{teacher_instance.profile_picture.url}}" alt="profilePic" class="profilePic">
+            <div class="fullName" style="font-size: 1.2rem;">{{teacher_instance.name}}</div>
+            <div class="profileOptions">
+                <ul>
+                    <li>
+                        <a href="#">Account</a>
+                    </li>
+                    <li>
+                        <a href="#">Settings</a>
+                    </li>
+                    <li>
+                        <a href="#">Privacy</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <aside class="aside">
+        <ul class="pageLinks">
+            <li class="pageLink">
+                <a href="{% url 's_dashboard' %}">Home</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Account</a>
+            </li>
+            <li class="pageLink">
+                <a href="{% url 'c_canteen'  %}">Canteen</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Student</a>
+            </li>
+            <li class="pageLink">
+                <a class="activePage" href="{% url 'teacher_view' %}">Exam</a>
+            </li>
+
+            <li class="pageLink">
+                <a href="#">Library</a>
+            </li>
+            <li class="pageLink">
+                <a href="#">Faculty</a>
+            </li>
+        
+        </ul>
+        <br> <br> <br> <br> <br> <br> <br> <br> <br><br> <br> <br> 
+    </aside>
+    <form id="uploadForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" style="display: none;">
+        <div class="button-container">
+            <button type="button" id="importButton" onclick="importData()">Import Spreadsheet</button>
+            <button type="button" id="submitButton" onclick="submitData(`{% url 'submit_result_file_teacher' %}`)" data-semester="{{ semester }}", data-batch="{{ batch }}", data-faculty="{{ faculty }}", data-exam_type="{{ subject }}">Submit Data</button>
+            <!--so yo add result admin jastaii parna laii exam type mai subject pathako xa remember it okayy :lazyy broo-->
+            <button type="button" id="deleteButton" onclick="deleteFile()">Delete File</button>
+        </div>
+    </form>
+
+    <table id="spreadsheetData"></table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Include Toastr CSS and JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Include XLSX library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    
+    <!-- Include your custom exam.js file -->
+    <script src="{% static 'examsection/js/exam.js' %}"></script>
+</body>
+
+</html>
