@@ -207,7 +207,7 @@ def get_order(request):
             content="Please reload the page to view the order."
         )
         for staff_admin in staff_admins:
-            staff_admin.admin_notifications.add(notification)
+            staff_admin.notifications.add(notification)
 
         return JsonResponse({'message': 'success'})
     return JsonResponse({'message': 'Invalid request method'}, status=405)
