@@ -36,6 +36,8 @@ function togglenoti(boxId) {
            box.style.height = '0px';
            box.style.opacity = 0;
            down = false;
+           var notificationIds = getAllNotificationIds();
+           markNotificationsAsSeen(notificationIds);
        } else {
            box.style.opacity = 1;
            down = true;
@@ -44,6 +46,39 @@ function togglenoti(boxId) {
    } else {
        console.error("Notification box not found.");
    }
+}
+function getAllNotificationIds() {
+    print('gather them notification ids,staff ma xam');
+    var notificationElements = document.querySelectorAll('.notification-item');
+    var notificationIds = Array.from(notificationElements).map(function(element) {
+        return element.dataset.notificationId;
+    });
+    return notificationIds;
+}
+
+function markNotificationsAsSeen(notificationIds) {
+    print('notificxation laii seen garana janey,staff ma xam');
+    var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    fetch(marknotificationUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ 'notification_ids': notificationIds }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Notifications marked as seen:', data);
+    })
+    .catch(error => {
+        console.error('Error marking notifications as seen:', error);
+    });
 }
 
 function addmenuItem() {

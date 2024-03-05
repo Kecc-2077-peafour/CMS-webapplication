@@ -29,20 +29,56 @@ function showProfileOptions(){
     }
 }
  var box = document.getElementById('batta');
- var down = false;
- function togglenoti()
- {
-    if(down){
-       box.style.height = '0px';
-       box.style.opacity = 0;
-       down = false; 
+ function togglenoti(boxId) {
+    var box = document.getElementById(boxId);
+    if (box) {
+        if (down) {
+            box.style.height = '0px';
+            box.style.opacity = 0;
+            down = false;
+            var notificationIds = getAllNotificationIds();
+            markNotificationsAsSeen(notificationIds);
+        } else {
+            box.style.opacity = 1;
+            down = true;
+            box.style.height = '400px';
+        }
+    } else {
+        console.error("Notification box not found.");
     }
-    else{
-        box.style.opacity=1;
-        down = true;
-        box.style.height = '400px';
-        // box.style.width = '220px';
-    }
+ }
+ function getAllNotificationIds() {
+     print('gather them notification ids,customer ma xam');
+     var notificationElements = document.querySelectorAll('.notification-item');
+     var notificationIds = Array.from(notificationElements).map(function(element) {
+         return element.dataset.notificationId;
+     });
+     return notificationIds;
+ }
+ 
+ function markNotificationsAsSeen(notificationIds) {
+     print('notificxation laii seen garana janey customer ma xam');
+     var csrfToken = getCookie('csrftoken');
+     fetch(marknotificationUrl, {
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json',
+             'X-CSRFToken': csrfToken,
+         },
+         body: JSON.stringify({ 'notification_ids': notificationIds }),
+     })
+     .then(response => {
+         if (!response.ok) {
+             throw new Error('Network response was not ok');
+         }
+         return response.json();
+     })
+     .then(data => {
+         console.log('Notifications marked as seen:', data);
+     })
+     .catch(error => {
+         console.error('Error marking notifications as seen:', error);
+     });
  }
 
 var currentItem = null; // To store the reference to the currently selected item

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import c_canteen_view, s_canteen_view, orders_view, add_menuItem,add_specialItem,delete_specialItem, delete_menuItem,get_order,logout_view, confirm_order
+from .views import c_canteen_view, s_canteen_view, orders_view, add_menuItem,add_specialItem,delete_specialItem, delete_menuItem,get_order,logout_view, confirm_order,get_notifications,mark_notifications_as_seen
 
 urlpatterns = [
     path('customer/', c_canteen_view, name='c_canteen'),
@@ -12,5 +12,7 @@ urlpatterns = [
     path('order/get_order', get_order, name='get_the_order'),
     path('order/confirm_order', confirm_order, name='order_confirmed'),
     path('logout/', logout_view, name='logout'),
+    path('api/get_notifications/', get_notifications, name='get_notifications'),
+     path('mark_notifications_as_seen/', mark_notifications_as_seen, name='mark_notifications_as_seen'),
 
 ]

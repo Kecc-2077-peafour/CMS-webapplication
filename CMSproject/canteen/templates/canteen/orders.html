@@ -94,18 +94,16 @@
             <h2>CANTEEN</h2>
             <div class="notice">
                 <div class="notification" onclick="togglenoti('batta')">
-                    <img height="40px" width="40px" src="/media/bell.png" alt=""><span class="span">2</span>
+                    <img height="40px" width="40px" src="/media/bell.png" alt=""><span class="span">{{ admin_notifications.count }}</span>
                 </div>
                 <div class="not-box" id="batta">
-                    <div class="text">
-                        Lorem ipsum dolor sit amet 
+                    {% for notification in admin_notifications %}
+                    <div>
+                        <h4>{{ notification.title }}</h4>
+                        <p>{{ notification.content }}</p>
+                        <!-- Add more details as needed -->
                     </div>
-                    <div class="text">
-                        Lorem ipsum dolor sit amet 
-                    </div>
-                    <div class="text">
-                        Lorem ipsum dolor sit amet
-                    </div>
+                {% endfor %}
                 </div>
             </div>
         </div>
@@ -145,6 +143,49 @@
     </main>
     <script>
         var confirmOrderurl = "{% url 'order_confirmed' %}";
+            var apigetnotificationUrl = "{% url 'get_notifications' %}";
+            var marknotificationUrl = "{% url 'mark_notifications_as_seen' %}";
+            var notificationSound = new Audio('{% static "canteen/audio/notification.wav" %}');
+            $(document).ready(function() {
+                $('.notification').data('already-rendered', true);
+            });
+        
+            function updateNotifications() {
+                fetch(apigetnotificationUrl)  // Update with your actual API endpoint
+                    .then(response => response.json())
+                    .then(data => {
+                        var notificationCount = data.notification_count;
+                        var newNotifications = $(data.notification_html);  // Convert HTML to jQuery elements
+        
+                        // Filter out notifications that were present during the initial page load
+                        newNotifications = newNotifications.filter(function () {
+                            return !$(this).data('already-rendered');
+                        });
+                        if (newNotifications.length > 0) {
+                            notificationSound.play();
+                        }
+        
+                        // Update the UI with new notifications
+                        $('#notificationCount').text(notificationCount);
+                        
+                        // Add the 'data-already-rendered' attribute to the new notifications
+                        newNotifications.data('already-rendered', true);
+        
+                        // Wrap each new notification in a div with the appropriate class and data attribute
+                        newNotifications.each(function() {
+                            var notificationId = $(this).data('notification-id');
+                            var notificationItem = $('<div class="notification-item" data-notification-id="' + notificationId + '"></div>');
+                            notificationItem.append($(this));
+                            $('#batta').append(notificationItem);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error updating notifications:', error);
+                    });
+            }
+        
+            // Call the function every 20 seconds (adjust as needed)
+            setInterval(updateNotifications, 20000);    
     </script> 
     <script src="{% static 'canteen/js/orders.js' %}"></script>
 </body>

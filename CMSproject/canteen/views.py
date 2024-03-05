@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 import json
-from uuid import UUID
+from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -24,10 +24,26 @@ def c_canteen_view(request):
     menu_items = MenuItem.objects.all()
 
     if user_role == 'student':
-        context = {'student_instance': request.user.student, 'teacher_instance': None, 'user_type': 'student', 'menu_items': menu_items}
+        student_instance = request.user.student
+        notifications = student_instance.notifications.filter(is_seen=False)
+        context = {
+            'student_instance': student_instance,
+            'teacher_instance': None,
+            'user_type': 'student',
+            'menu_items': menu_items,
+            'notifications': notifications,
+        }
         return render(request, 'canteen/c_canteen.html', context)
     elif user_role == 'teacher':
-        context = {'student_instance': None, 'teacher_instance': request.user.teacher, 'user_type': 'teacher', 'menu_items': menu_items}
+        teacher_instance = request.user.teacher
+        notifications = teacher_instance.notifications.filter(is_seen=False)
+        context = {
+            'student_instance': None,
+            'teacher_instance': teacher_instance,
+            'user_type': 'teacher',
+            'menu_items': menu_items,
+            'notifications': notifications,
+        }
         return render(request, 'canteen/c_canteen.html', context)
     else:
         raise Http404("User not found")
@@ -40,7 +56,14 @@ def s_canteen_view(request):
     if user_role == 'admin':
         user = request.user
         admin_instance = user.admin
-        context = {'admin_instance': admin_instance, 'menu_items': menu_items}
+        admin_notifications = admin_instance.notifications.filter(is_seen=False)
+        for notification in admin_notifications:
+            print(notification.content)
+        context = {
+            'admin_instance': admin_instance,
+            'menu_items': menu_items,
+            'admin_notifications': admin_notifications,
+        }
         return render(request, 'canteen/s_canteen.html', context)
     else:
         raise Http404("Admin not found")
@@ -53,7 +76,11 @@ def orders_view(request):
     
     if user_role == 'admin':
         user = request.user
-        # If the user is an admin, proceed with the logic
+        admin_instance = user.admin
+
+        admin_notifications = admin_instance.notifications.filter(is_seen=False)
+        for notification in admin_notifications:
+            print(notification.content)
         order_items = Order.objects.all()
         for order in order_items:
             print(order)
@@ -83,7 +110,11 @@ def orders_view(request):
                 'customer_img': customer_img,
                 'customer_name': customer_name,
             })
-        context = {'admin_instance': user.admin, 'order_items': order_data}
+        context = {
+            'admin_instance': admin_instance,
+            'order_items': order_data,
+            'admin_notifications': admin_notifications,
+        }
         return render(request, 'canteen/orders.html', context)
     else:
         # If the user is not an admin, you may want to handle this case differently
@@ -201,3 +232,49 @@ def confirm_order(request):
         except Order.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Order not found'})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+
+def get_notifications(request):
+    user_role = request.session.get('user_role', None)
+    user_id = request.user.id  # Assuming your user model has an 'id' field
+
+    # Filter notifications based on the user's role
+    if user_role == 'admin':
+        admin_instance = request.user.admin
+        notifications = admin_instance.notifications.filter(is_seen=False)
+    elif user_role == 'student':
+        student_instance = request.user.student
+        notifications = student_instance.notifications.filter(is_seen=False)
+    elif user_role == 'teacher':
+        teacher_instance = request.user.teacher
+        notifications = teacher_instance.notifications.filter(is_seen=False)
+    else:
+        # Handle other user roles or raise an exception if needed
+        raise NotImplementedError("User role not supported")
+
+    # Render HTML representation of notifications directly in the view
+    notification_html = ""
+    for notification in notifications:
+        notification_html += f'<div class="notification-item" data-notification-id="{notification.id}">'
+        notification_html += f'<h4>{notification.title}</h4>'
+        notification_html += f'<p>{notification.content}</p>'
+        notification_html += '</div>'
+
+    # Count the notifications
+    notification_count = notifications.count()
+
+    return JsonResponse({
+        'notification_count': notification_count,
+        'notification_html': notification_html,
+    })
+
+
+def mark_notifications_as_seen(request):
+    # Get notification IDs from the JSON payload
+    data = json.loads(request.body)
+    notification_ids = data.get('notification_ids', [])
+    print('notification laii is_seen garna aako')
+    # Mark the specified notifications as seen
+    Notification.objects.filter(id__in=notification_ids).update(is_seen=True)
+
+    return JsonResponse({'message': 'Notifications marked as seen.'})
