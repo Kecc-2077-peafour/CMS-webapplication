@@ -1,11 +1,10 @@
 from django.shortcuts import render
-from core.models import Student, Teacher, Admin, Order, MenuItem , Notification
+from core.models import Student, Teacher, Admin, Order, MenuItem , Notification,OrderDetail
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 import json
-from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -67,7 +66,29 @@ def s_canteen_view(request):
         return render(request, 'canteen/s_canteen.html', context)
     else:
         raise Http404("Admin not found")
-    
+
+@login_required
+def sales_view(request):
+    user_role = request.session.get('user_role', None)  # Django's authenticated user
+    order_details = OrderDetail.objects.all()
+
+    if user_role == 'admin':
+        user = request.user
+        admin_instance = user.admin
+
+        admin_notifications = admin_instance.notifications.filter(is_seen=False)
+        for notification in admin_notifications:
+            print(notification.content)
+
+        context = {
+            'admin_instance': admin_instance,
+            'order_details': order_details,
+            'admin_notifications': admin_notifications,
+        }
+        return render(request, 'canteen/sales.html', context)
+    else:
+        raise Http404("Admin not found")
+     
 @login_required
 def orders_view(request):
     print('to display order page')
@@ -216,23 +237,65 @@ def confirm_order(request):
     print('confirm order is called')
     if request.method == 'POST':
         try:
-            # Parse the JSON data from the request body
             data = json.loads(request.body.decode('utf-8'))
-            # Extract order_id and status from the received data
             order_id = data.get('order_id')
             new_status = data.get('status')
-            # Retrieve the order from the database
             order = get_object_or_404(Order, id=order_id)
             print('new:old',new_status,order.status)
-            # Update the status of the order
             order.status = new_status
             order.save()
+            customer = order.customer
+            student_notification = Notification.objects.create(
+                title="Order Confirmed",
+                content=f"Your order with ID {order.order_name.name} has been confirmed."
+            )
+            customer.notifications.add(student_notification)
 
             return JsonResponse({'success': True, 'message': 'Order confirmed successfully'})
         except Order.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Order not found'})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
+def reject_order(request):
+    print('confirm order is called')
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            order_id = data.get('order_id')
+            order = get_object_or_404(Order, id=order_id)
+            order.delete()
+            customer = order.customer
+            student_notification = Notification.objects.create(
+                title="Order Rejected",
+                content=f"Your order with {order.order_name.name} has been rejected."
+            )
+            customer.notifications.add(student_notification)
+
+            return JsonResponse({'success': True, 'message': 'Order rejected successfully'})
+        except Order.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Order not found'})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+def completed_order(request):
+    print('confirm order is called')
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            order_id = data.get('order_id')
+            new_status = data.get('status')
+            order = get_object_or_404(Order, id=order_id)
+            print('new:old',new_status,order.status)
+            order.status = new_status
+            order.save()
+            order_detail = OrderDetail.objects.create(
+                order=order,
+                total_amount=(order.quantity * order.order_name.price)
+            )
+            order_detail.save()
+            return JsonResponse({'success': True, 'message': 'Order status changed successfully'})
+        except Order.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Order not found'})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 def get_notifications(request):
     user_role = request.session.get('user_role', None)

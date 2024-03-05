@@ -151,11 +151,10 @@
     
     
     <div>
-        {% if messages %}
-        <h4>i think i need to write something for it to show right?</h4>
-        <p>i think i need to write something for it to show right??</p>
+        <div class="required-msg">
+            {% if messages %}
             <p>{{ messages }}</p><!-- yo div ma ni css ra js layera yesko display timing banaunu parxa so that it fades after a time -->
-        {% endif %}
+            {% endif %}
     </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>

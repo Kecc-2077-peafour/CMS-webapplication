@@ -221,12 +221,19 @@ button:hover{
     display: flex;
     flex-direction: column;
     background-color: rgb(193, 192, 192);
+    padding: 10px;
     height:0px;
     opacity: 0;
-    width:200px;
+    width:250px;
     border-radius: 10%;
     z-index: 100;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.notification-item{
+    padding: 10px;
+    margin: 10px;
+    background-color: #D9D9D9;
+    border-radius: 5px;
 }
 .text{
     padding: 10px;

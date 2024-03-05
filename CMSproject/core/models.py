@@ -155,7 +155,7 @@ class MenuItem(models.Model):
 
 class Order(models.Model):
     customer = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
-    order_name = models.ForeignKey(MenuItem, on_delete=models.DO_NOTHING)
+    order_name = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
@@ -172,10 +172,10 @@ class Order(models.Model):
         return f"{self.customer} - {self.status}"
     
 class OrderDetail(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     total_amount = models.DecimalField(max_digits=8, decimal_places=2)
     def save(self, *args, **kwargs):
-        self.total_amount = self.order.quantity * self.order.price
+        self.total_amount = self.order.quantity * self.order.order_name.price
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -436,6 +436,29 @@ select, input {
 .toast-error {
     background: #e74c3c;
 }
+.required-msg {
+    text-align: center;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        
+    }
+}
+
+.required-msg p {
+    animation: fadeOut 7s linear forwards;
+    background-color: #eeedf5;
+    color: #e22209;
+    width: 600px;
+    height: 40px;
+    border-radius: 20px;
+    margin: 20px auto;
+}
 
 
 

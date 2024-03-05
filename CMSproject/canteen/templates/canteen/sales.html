@@ -48,13 +48,13 @@
     <aside class="aside">
         <ul class="pageLinks">
             <li class="pageLink">
-                <a class="activePage" href="{% url 's_canteen' %}">Menu</a>
+                <a href="{% url 's_canteen' %}">Menu</a>
             </li>
             <li class="pageLink">
                 <a href="{% url 'orders' %}">Orders</a>
             </li>
             <li class="pageLink">
-                <a href="{% url 'sales'  %}">Sales</a>
+                <a class="activePage" href="{% url 'sales'  %}">Sales</a>
             </li>
           
         </ul>
@@ -96,57 +96,19 @@
                 </div>
             </div>
         </div>
-        <section class="menu special">
-            <div class="title">
-                <h3>Today's Special</h3>
-            </div>
-            <div class="itemsContainer" id="specialItemsContainer">
-                {% for item in menu_items %}
-                    {% if item.special %}
-                    <div class="item" data-item-id="{{ item.id }}">
-                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
-                        <div class="itemName">{{ item.name }}</div>
-                        <div class="itemPrice"> Rs.{{ item.price }}-/</div>
-                        <div class="itemDescription"> {{ item.description }}</div>
-                        <button onclick="deleteItem(this, `{% url 'delete_specialItem' %}`)">Delete special Item</button>
-                    </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </section>
         <section class="menu">
             <div class="title">
-                <h3>Menu</h3>
+                <h3>Sale Details</h3>
             </div>
             <div class="itemsContainer" id="menus">
-                    {% for item in menu_items %}
-                        <div class="item" data-item-id="{{ item.id }}" data-special="{{ item.special }}">
-                            <img src="{{ item.image.url }}" alt="{{ item.name }}">
-                            <div class="itemName">{{ item.name }}</div>
-                            <div class="itemPrice"> Rs.{{ item.price }}-/</div>
-                            <div class="itemDescription"> {{ item.description }}</div>
-                            <button onclick="deleteItem(this, `{% url 'delete_menuItem' %}`)">Delete Item</button>
-                            {% if item.special %}
-                            <button> Added! </button>
-                            {% else %}
-                            <button onclick="AddToSpecial(this)" data-urls="{% url 'add_specialItem' %}">Add to Specials</button>
-                            {% endif %}
+                    {% for item in order_details %}
+                        <div class="Order" >
+                            <div class="orderName">{{ item.order.order_name.name}}</div>
+                            <div class="orderPrice"> Rs.{{item.order.order_name.price }}-/</div>
+                            <div class="orderQuantity"> {{ item.order.quantity }}</div>
+                            <div class="orderTotalAmount"> {{ item.total_amount }}</div>
                         </div>
                     {% endfor %}
-            </div>
-            <div class="menu-change"><h3>Add Menu Items</h3>
-                <form method="post" enctype="multipart/form-data" id="addItemForm">
-                    {% csrf_token %}
-                    <label for="itemsName"><h4>Item Name:</h4></label>
-                    <input type="text" id="itemsName" name="itemsName">
-                    <label for="itemsPrice"><h4>Item Price:</h4></label>
-                    <input type="number" id="itemsPrice" name="itemsPrice">
-                    <label for="itemsDescription"><h4>Description:</h4></label>
-                    <input type="text" id="itemsDescription" name="itemsDescription">
-                    <label for="itemsImage"><h4>Select Image:</h4></label>
-                    <input type="file" id="itemsImageInput" name="itemsImageInput" accept="image/*">
-                    <button type="button" onclick="addmenuItem()" data-url="{% url 'add_menuItem' %}">Add Item</button>
-                </form>
             </div>
         </section>
     </main>

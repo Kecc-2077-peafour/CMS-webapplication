@@ -39,7 +39,7 @@ function togglenoti(boxId) {
     }
  }
  function getAllNotificationIds() {
-     print('gather them notification ids,orders  ma xam');
+     console.log('gather them notification ids,orders  ma xam');
      var notificationElements = document.querySelectorAll('.notification-item');
      var notificationIds = Array.from(notificationElements).map(function(element) {
          return element.dataset.notificationId;
@@ -48,7 +48,7 @@ function togglenoti(boxId) {
  }
  
  function markNotificationsAsSeen(notificationIds) {
-     print('notificxation laii seen garana janey order ma xam');
+     console.log('notificxation laii seen garana janey order ma xam');
      var csrfToken = getCookie('csrftoken');
      fetch(marknotificationUrl, {
          method: 'POST',
@@ -86,6 +86,7 @@ function getCookie(name) {
     return cookieValue;
 }
 function confirmOrder(button) {
+    console.log('staff clicked confirmed the order');
     var orderId = button.getAttribute('data-order-id');
     var csrfToken = getCookie('csrftoken');
     fetch(confirmOrderurl, {
@@ -106,5 +107,49 @@ function confirmOrder(button) {
         console.log('sucessfull');
         location.reload();
     })
-    console.log('staff clicked confirmed the order');
+}
+function OrderCompleted(button) {
+    console.log('staff clicked coMPLETED the order');
+    var orderId = button.getAttribute('data-order-id');
+    var csrfToken = getCookie('csrftoken');
+    fetch(OrderCompletedurl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify ({
+            'order_id':orderId,
+            'status':'completed',
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.log('unsucessful');
+        }
+        console.log('sucessfull');
+        location.reload();
+    })
+}
+function rejectOrder(button) {
+    console.log('staff clicked reject the order');
+    var orderId = button.getAttribute('data-order-id');
+    var csrfToken = getCookie('csrftoken');
+    fetch(rejectOrderurl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify ({
+            'order_id':orderId,
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.log('unsucessful');
+        }
+        console.log('sucessfull');
+        location.reload();
+    })
 }

@@ -48,7 +48,7 @@ function togglenoti(boxId) {
    }
 }
 function getAllNotificationIds() {
-    print('gather them notification ids,staff ma xam');
+    console.log('gather them notification ids,staff ma xam');
     var notificationElements = document.querySelectorAll('.notification-item');
     var notificationIds = Array.from(notificationElements).map(function(element) {
         return element.dataset.notificationId;
@@ -57,7 +57,7 @@ function getAllNotificationIds() {
 }
 
 function markNotificationsAsSeen(notificationIds) {
-    print('notificxation laii seen garana janey,staff ma xam');
+    console.log('notificxation laii seen garana janey,staff ma xam');
     var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     fetch(marknotificationUrl, {
         method: 'POST',

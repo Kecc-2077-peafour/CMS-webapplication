@@ -6,8 +6,11 @@ function enableEdit() {
     if (editingAllowed) {
         console.log('editing allowed if');
         var cells = document.querySelectorAll('.table-hover td');
-        cells.forEach(function(cell) {
-            cell.contentEditable = true;
+        cells.forEach(function(cell, index) {
+            // Skip first two columns (index 0 and 1)
+            if (index > 1) {
+                cell.contentEditable = true;
+            }
         });
     }
 }

@@ -96,17 +96,21 @@
             <div class="notification" onclick="togglenoti()">
                 <img height="40px" width="40px" src="/media/bell.png" alt=""><span class="span" >{{ admin_notifications.count }}</span>
             </div>
-                <div class="not-box" id="batta">
-                    {% for notification in admin_notifications %}
-                    <div>
-                        <h4>{{ notification.title }}</h4>
-                        <p>{{ notification.content }}</p>
-                        <!-- Add more details as needed -->
-                    </div>
-                {% endfor %}
-                <div>
+            <div class="not-box" id="batta">
+                <div class="notification-item">
                     <i>view notifications here</i>
                 </div>
+                <div class="notification-item">
+                    <h4>Dummy notification</h4>
+                    <p>Dummy notification content</p>
+                </div>
+                {% for notification in admin_notifications %}
+                <div class="notification-item" data-notification-id="{{ notification.id }}">
+                    <h4>{{ notification.title }}</h4>
+                    <p>{{ notification.content }}</p>
+                    <!-- Add more details as needed -->
+                </div>
+            {% endfor %}
                 </div>
                 </div>
             </div>

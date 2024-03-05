@@ -29,6 +29,7 @@ function showProfileOptions(){
     }
 }
  var box = document.getElementById('batta');
+ var down = false;
  function togglenoti(boxId) {
     var box = document.getElementById(boxId);
     if (box) {
@@ -48,7 +49,7 @@ function showProfileOptions(){
     }
  }
  function getAllNotificationIds() {
-     print('gather them notification ids,customer ma xam');
+     console.log('gather them notification ids,customer ma xam');
      var notificationElements = document.querySelectorAll('.notification-item');
      var notificationIds = Array.from(notificationElements).map(function(element) {
          return element.dataset.notificationId;
@@ -57,7 +58,7 @@ function showProfileOptions(){
  }
  
  function markNotificationsAsSeen(notificationIds) {
-     print('notificxation laii seen garana janey customer ma xam');
+     console.log('notificxation laii seen garana janey customer ma xam');
      var csrfToken = getCookie('csrftoken');
      fetch(marknotificationUrl, {
          method: 'POST',
