@@ -1,21 +1,11 @@
 from django.shortcuts import render
 from core.models import Student, Teacher, Admin, Order, MenuItem , Notification,OrderDetail
-from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 import json
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import logout
-from django.shortcuts import redirect
-from django.contrib import messages
 from django.http import Http404
-
-def logout_view(request):
-    print('this view was invoked')
-    logout(request)
-    messages.success(request, 'You have been successfully logged out.')
-    return redirect('login:login')
  
 @login_required
 def c_canteen_view(request):
@@ -141,8 +131,6 @@ def orders_view(request):
         # If the user is not an admin, you may want to handle this case differently
         raise Http404("Admin not found")
 
-
-
 @csrf_protect
 def add_menuItem(request):
     try:
@@ -169,7 +157,6 @@ def add_menuItem(request):
         print(f"Error in add_menuItem view: {e}")
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
-
 @csrf_protect
 def add_specialItem(request):
     if request.method == 'POST':
@@ -191,6 +178,17 @@ def delete_menuItem(request):
     item_id = data.get('item_id')
 
     item = get_object_or_404(MenuItem, pk=item_id)
+    
+    # Check if the MenuItem is linked to any Order
+    linked_orders = Order.objects.filter(menu_item=item)
+    for order in linked_orders:
+        # Check if the Order is linked to any OrderDetail
+        linked_order_details = OrderDetail.objects.filter(order=order)
+        for order_detail in linked_order_details:
+            order_detail.delete()
+        order.delete()
+
+    # Now delete the MenuItem
     item.delete()
 
     return JsonResponse({'message': 'Item deleted successfully'})

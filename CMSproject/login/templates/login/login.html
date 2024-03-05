@@ -26,11 +26,11 @@
             <a href="#">Logout</a>
         </div>
     </nav>
-    {% comment %} {% for message in messages %}
-        {% if 'logout' in message.tags %}
-            <div class="{{ message.tags }}">{{ message }}</div>
+    <div class="required-msg">
+        {% if messages %}
+        <p>{{ messages }}</p><!-- yo div ma ni css ra js layera yesko display timing banaunu parxa so that it fades after a time -->
         {% endif %}
-    {% endfor %} {% endcomment %}
+</div>
 
     <div class="main">
         <h1>Login</h1>

@@ -185,6 +185,7 @@ button {
 
 
 .modal {
+    z-index: 1000;
     display: none;
     position: fixed;
     top: 0;
@@ -459,6 +460,5 @@ select, input {
     border-radius: 20px;
     margin: 20px auto;
 }
-
 
 

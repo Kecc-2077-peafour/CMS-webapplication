@@ -79,9 +79,14 @@ function handleOptionClick(option) {
 }
 //GO button
 function applyFilters() {
-    var filterMetadata = get_filter_metadata();
-    var formData = new FormData();
     let selectedOption = document.getElementById('goButton').getAttribute('data-selected-option');
+    if (selectedOption == 'course_Info'){
+        var filterMetadata = get_course_filter_metadata();
+    }
+    else{
+        var filterMetadata = get_filter_metadata();
+    }
+    var formData = new FormData();
     console.log('Filter Metadata:', filterMetadata);
     Object.entries(filterMetadata).forEach(([key, value]) => {
         formData.append(key, value);
@@ -467,7 +472,29 @@ function get_filter_metadata() {
     if (subjectName && subjectName.value != null && subjectName.value.trim() !== "") {
         filterData.subject_Name = subjectName.value;
     }
-    console.log('this is the filter form data returned:', filterData);
+    console.log('this is the na course ko lagi filter form data returned:', filterData);
+    if (Object.keys(filterData).length > 0) {
+        console.log(filterData);
+        return filterData;
+    } else {
+        console.log('No valid filter data found.');
+        return null; // or return an empty object, depending on your requirements
+    }
+}
+function get_course_filter_metadata(){
+    var faculty = document.getElementById('courseFaculty');
+    var semester = document.getElementById('courseSemester');
+
+    var filterData = {};
+
+    if (faculty && faculty.value != null && faculty.value.trim() !== "") {
+        filterData.faculty = faculty.value;
+    }
+
+    if (semester && semester.value != null && semester.value.trim() !== "") {
+        filterData.semester = semester.value;
+    }
+    console.log('this is the course ko filter form data returned:', filterData);
     if (Object.keys(filterData).length > 0) {
         console.log(filterData);
         return filterData;

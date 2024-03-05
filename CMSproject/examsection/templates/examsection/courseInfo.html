@@ -7,11 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Module</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/view.css' %}">
 </head>
@@ -38,7 +33,10 @@
                         <a href="#">Privacy</a>
                     </li>
                     <li>
-                        <a href="{% url 'logout' %}">Logout</a>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
                     </li>
                 </ul>
             </div>
@@ -53,8 +51,8 @@
             <li class="pageLink" onclick="handleOptionClick('student_analysis')">
                 <a>Student Analysis</a>
             </li>
-            <li class="pageLink" onclick="handleOptionClick('course_Info')">
-                <a>Course Info </a>
+            <li class="pageLink " onclick="handleOptionClick('course_Info')">
+                <a class="activePage">Course Info </a>
             </li>
             <li class="pageLink" onclick="handleOptionClick('add_result')">
                 <a>Add Results </a>
@@ -64,6 +62,7 @@
             </li>
         </ul>
     </aside>
+    <div class="main">
 
     <table class="table-fill">
         <thead>
@@ -119,7 +118,7 @@
         {% endif %}    
 </tbody>
     </table>
-    <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div>
+    <!-- <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div> -->
 
     <!-- Modal -->
     <div id="filterModal" class="modal">
@@ -165,7 +164,7 @@
         </div>
     </div>
     <!-- Another Modal for Courses -->
-    <div id="filter" onclick="openCourseModal()">🔍 Filter</div>
+    <!-- <div id="filter" onclick="openCourseModal()">🔍 Filter</div> -->
 <div id="courseModal" class="modal">
     <div class="modal-content">
         <h2>Course Information</h2>
@@ -198,7 +197,7 @@
         </form>
     </div>
 </div>
-
+</div>
 </div>
 <script>
     var addResultUrl = "{% url 'handle_add_result_submission' %}";

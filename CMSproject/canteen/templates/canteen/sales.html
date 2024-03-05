@@ -7,15 +7,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canteen Staff</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-   
     <link rel="stylesheet" type="text/css" href="{% static 'canteen/css/s_canteen.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
-    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" /> -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
-</head>
+    <style>
+        .table-title {
+    position: relative;
+    display: block;
+    margin: auto;
+    max-width: 600px;
+    padding: 5px;
+    width: fit-content;
+}
+
+.table-fill {
+    position: relative;
+    margin-top: 50px; /* Move 50 pixels down */
+    background: white;
+    border-radius: 3px;
+    border-collapse: collapse;
+    height: fit-content;
+    max-width: 600px;
+    padding: 5px;
+    width: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    animation: float 5s infinite;
+}
+
+th {
+    color: #D5DDE5;
+    background: #5489c1;
+    border-bottom: 4px solid #9ea7af;
+    border-right: 1px solid #343a45;
+    font-size: 23px;
+    font-weight: 100;
+    padding: 20px;
+    text-align: left;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    vertical-align: middle;
+}
+td {
+    background: #FFFFFF;
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: 300;
+    font-size: 14px;
+    text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #C1C3D1;
+}
+    </style>
 <body>
     <nav class="navbar">
         <picture class="logoContainer"> 
@@ -101,13 +140,23 @@
                 <h3>Sale Details</h3>
             </div>
             <div class="itemsContainer" id="menus">
+                <table id="table-fill" class="table-fill">
+                <thead>
+                    <tr>
+                        <th>Order Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
                     {% for item in order_details %}
-                        <div class="Order" >
-                            <div class="orderName">{{ item.order.order_name.name}}</div>
-                            <div class="orderPrice"> Rs.{{item.order.order_name.price }}-/</div>
-                            <div class="orderQuantity"> {{ item.order.quantity }}</div>
-                            <div class="orderTotalAmount"> {{ item.total_amount }}</div>
-                        </div>
+                        <tr class="Order" >
+                            <td class="orderName">{{ item.order.order_name.name}}</td>
+                            <td class="orderPrice"> Rs.{{item.order.order_name.price }}-/</td>
+                            <td class="orderQuantity"> {{ item.order.quantity }}</td>
+                            <td class="orderTotalAmount"> {{ item.total_amount }}</td>
+                        </tr>
                     {% endfor %}
             </div>
         </section>

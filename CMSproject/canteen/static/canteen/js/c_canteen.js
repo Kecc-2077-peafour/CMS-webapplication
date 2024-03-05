@@ -31,7 +31,7 @@ function showProfileOptions(){
  var box = document.getElementById('batta');
  var down = false;
  function togglenoti(boxId) {
-    var box = document.getElementById(boxId);
+    // var box = document.getElementById(boxId);
     if (box) {
         if (down) {
             box.style.height = '0px';

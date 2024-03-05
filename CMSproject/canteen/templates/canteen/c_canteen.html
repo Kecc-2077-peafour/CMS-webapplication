@@ -8,12 +8,6 @@
     <title>Canteen</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'canteen/css/c_canteen.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
 </head>
 <body>
     <nav class="navbar">
@@ -46,7 +40,10 @@
                         <a href="#">Privacy</a>
                     </li>
                     <li>
-                        <a href="{% url 'logout' %}">Logout</a>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
                     </li>
                 </ul>
             </div>
@@ -132,7 +129,7 @@
                             <form method="post">
                                 {% csrf_token %}
                             <label for="quantityInput">Enter Quantity:</label>
-                            <input type="number" id="quantityInput" min="1" value="1">
+                            <input type="number" id="quantityInput" min="1">
                             <button onclick="orderItem(this)" 
                                 data-customer-id="{% if user_type == 'student' %}{{ student_instance.student_id }}{% elif user_type == 'teacher' %}{{ teacher_instance.teacher_id }}{% endif %}"
                                 data-customer-name="{% if user_type == 'student' %}{{ student_instance.name }}{% elif user_type == 'teacher' %}{{ teacher_instance.name }}{% endif %}"

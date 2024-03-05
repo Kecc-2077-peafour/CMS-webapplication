@@ -160,7 +160,7 @@ def student_analysis_view(request):
 
             # Store the percentages in the dictionary
             subject_percentages.append({
-                'subject_obj': student_obj,
+                'subject_obj': subject_obj,
                 'pass_percentage': pass_percentage,
                 'fail_percentage': fail_percentage
              })

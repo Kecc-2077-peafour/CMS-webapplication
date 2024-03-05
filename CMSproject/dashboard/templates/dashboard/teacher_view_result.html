@@ -10,11 +10,7 @@
     <!-- Include Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
+    <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/view.css' %}">
 </head>
 
 <body>
@@ -27,7 +23,7 @@
             <button class="search_button">
             </button>
         </div> {% endcomment %}
-        {% comment %} <div class="userProfileContainer" onclick="showProfileOptions()">
+         <div class="userProfileContainer" onclick="showProfileOptions()">
             <img src="{{teacher_instance.profile_picture.url}}" alt="profilePic" class="profilePic">
             <div class="fullName" style="font-size: 1.2rem;">{{teacher_instance.name}}</div>
             <div class="profileOptions">
@@ -42,13 +38,16 @@
                         <a href="#">Privacy</a>
                     </li>
                     <li>
-                        <a href="{% url 'logout' %}">Logout</a>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
                     </li>
                 </ul>
             </div>
         </div>
-    </nav> {% endcomment %}
-    {% comment %} <aside class="aside">
+    </nav>
+     <aside class="aside">
         <ul class="pageLinks">
             <li class="pageLink">
                 <a href="{% url 's_dashboard' %}">Home</a>
@@ -74,8 +73,9 @@
             </li>
         
         </ul>
-        <br> <br> <br> <br> <br> <br> <br> <br> <br><br> <br> <br> 
-    </aside> {% endcomment %}
+        <!-- <br> <br> <br> <br> <br> <br> <br> <br> <br><br> <br> <br>  -->
+    </aside>
+    <div class="main">
     <table id="table-fill" class="table-fill">
         <thead>
             <tr>
@@ -99,6 +99,8 @@
             {% endfor %} 
         </tbody>
     </table>
+</div>
     <script src="{% static 'examsection/js/view.js' %}"></script>
+    <script src="{% static 'examsection/js/exam.js' %}"></script>
 </body>
 </html>

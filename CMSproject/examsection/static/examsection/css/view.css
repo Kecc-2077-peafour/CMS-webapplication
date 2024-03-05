@@ -1,23 +1,28 @@
-
+.main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 75%;
+    float: right;
+    padding-top: 30px;
+    overflow: auto;
+}
 .table-title {
     position: relative;
-    left: 10%;
     display: block;
     margin: auto;
     max-width: 600px;
     padding: 5px;
-    width: 100%;
+    width: fit-content;
 }
 
 .table-fill {
     position: relative;
-    left: 10%;
     margin-top: 50px; /* Move 50 pixels down */
     background: white;
     border-radius: 3px;
     border-collapse: collapse;
     height: fit-content;
-    margin: auto;
     max-width: 600px;
     padding: 5px;
     width: 100%;

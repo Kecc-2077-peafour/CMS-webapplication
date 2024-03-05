@@ -11,12 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/view.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya SC:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu Mono:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Font Awesome 5 Free:wght@400&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" />
 </head>
 
 <body>
@@ -41,7 +35,10 @@
                         <a href="#">Privacy</a>
                     </li>
                     <li>
-                        <a href="{% url 'logout' %}">Logout</a>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
                     </li>
                 </ul>
             </div>
@@ -62,13 +59,14 @@
             <li class="pageLink" onclick="handleOptionClick('add_result')">
                 <a>Add Results </a>
             </li>
-            <li class="pageLink" onclick="handleOptionClick('view_result')">
-                <a>View Results</a>
+            <li class="pageLink " onclick="handleOptionClick('view_result')">
+                <a class="activePage">View Results</a>
             </li>
         </ul>
     </aside>
 
 
+    <div class="main">
     <table id="table-fill" class="table-fill">
         <thead>
             <tr>
@@ -92,10 +90,11 @@
             {% endfor %} 
         </tbody>
     </table>
+
     <button class="saveButton" onclick="saveData()">Save Data</button>
     <button class="editButton" onclick="enableEditing()">Edit</button>
-    
-    <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div>
+</div>
+    <!-- <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div> -->
 
     <!-- Modal -->
     <div id="filterModal" class="modal">
@@ -141,7 +140,7 @@
         </div>
     </div>
     <!-- Another Modal for Courses -->
-    <div id="filter" onclick="openCourseModal()">🔍 Filter</div>
+    <!-- <div id="filter" onclick="openCourseModal()">🔍 Filter</div> -->
 <div id="courseModal" class="modal">
     <div class="modal-content">
         <h2>Course Information</h2>
