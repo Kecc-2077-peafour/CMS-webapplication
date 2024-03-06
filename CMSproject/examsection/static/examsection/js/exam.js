@@ -22,7 +22,7 @@ const navbarHeight = document.getElementsByClassName("navbar")[0].clientHeight;
 const windowHeight = window.innerHeight;
 const profileOptions = document.getElementsByClassName("profileOptions")[0];
 
-function adjustHeight(){
+function adjustHeight() {
     aside.style.height = (windowHeight - navbarHeight) + 'px';
     main.style.height = (windowHeight - navbarHeight) + 'px';
     main.style.maxHeight = (windowHeight - navbarHeight) + 'px';
@@ -30,30 +30,29 @@ function adjustHeight(){
 }
 adjustHeight();
 
-function showProfileOptions(){
-    if (profileOptions.style.display === '' || profileOptions.style.display === 'none'){
+function showProfileOptions() {
+    if (profileOptions.style.display === '' || profileOptions.style.display === 'none') {
         profileOptions.style.display = 'block';
-    }
-    else{
+    } else {
         profileOptions.style.display = 'none';
     }
 }
- var box = document.getElementById('batta');
- var down = false;
- function togglenoti()
- {
-    if(down){
-       box.style.height = '0px';
-       box.style.opacity = 0;
-       down = false; 
-    }
-    else{
-        box.style.opacity=1;
+var box = document.getElementById('batta');
+var down = false;
+
+function togglenoti() {
+    if (down) {
+        box.style.height = '0px';
+        box.style.opacity = 0;
+        down = false;
+    } else {
+        box.style.opacity = 1;
         down = true;
         box.style.height = '400px';
-    
+
     }
- }
+}
+
 function openFilterModal() {
     console.log('opened the filer form');
     document.getElementById("filterModal").style.display = "flex";
@@ -70,8 +69,7 @@ function handleOptionClick(option) {
     console.log(selectedOption);
     if (selectedOption === 'course_Info') {
         openCourseModal();
-    } 
-    else {
+    } else {
         openFilterModal();
     }
     console.log('yo chalxa ra?');
@@ -80,10 +78,9 @@ function handleOptionClick(option) {
 //GO button
 function applyFilters() {
     let selectedOption = document.getElementById('goButton').getAttribute('data-selected-option');
-    if (selectedOption == 'course_Info'){
+    if (selectedOption == 'course_Info') {
         var filterMetadata = get_course_filter_metadata();
-    }
-    else{
+    } else {
         var filterMetadata = get_filter_metadata();
     }
     var formData = new FormData();
@@ -93,8 +90,8 @@ function applyFilters() {
     });
     console.log('FormData Entries:');
     for (const [key, value] of formData.entries()) {
-    console.log(`${key}: ${value}`);
-}
+        console.log(`${key}: ${value}`);
+    }
     // Add CSRF token to the headers
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     switch (selectedOption) {
@@ -127,147 +124,62 @@ function applyFilters() {
             fetchteacherview(formData);
     }
 }
+
 function fetchAddResult(formData) {
     fetch(addResultUrl, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        if (!response.ok){
-            console.log('unsucessful promise');
-            throw new Error(errorMessage);
-        }
-        else{
-            console.log('successful promise');
-            return response.json();
-        }
-    })
-    .then(data => {
-        console.log(data);
-        var successMessage = 'Adding result of ' + data.data.exam_type + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
-        console.log(successMessage);
-        window.location.href =`/examsection/addresult/${data.data.semester}/${data.data.batch_number}/${data.data.faculty}/${data.data.exam_type}/`;
-    })
-    .catch(error => {
-        toastr.warning(error);
-        closeFilterModal();
-    })
-    .finally(() => {
-        closeFilterModal();
-    });
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log('unsucessful promise');
+                throw new Error(errorMessage);
+            } else {
+                console.log('successful promise');
+                return response.json();
+            }
+        })
+        .then(data => {
+            console.log(data);
+            var successMessage = 'Adding result of ' + data.data.exam_type + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
+            console.log(successMessage);
+            window.location.href = `/examsection/addresult/${data.data.semester}/${data.data.batch_number}/${data.data.faculty}/${data.data.exam_type}/`;
+        })
+        .catch(error => {
+            toastr.warning(error);
+            closeFilterModal();
+        })
+        .finally(() => {
+            closeFilterModal();
+        });
 }
+
 function fetchViewResult(formData) {
     fetch(viewResultUrl, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.log('unsucessfull promise');
-            throw new Error('Network response was not ok');
-        }
-        console.log('successful promise');
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-        var successMessage = 'showing result of ' + data.data.exam_type + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
-        console.log(successMessage);
-        let url = '/examsection/viewresult/?';
-        if (data.data.semester) {
-            url += `semester=${data.data.semester}&`;
-        }
-        if (data.data.batch_number !== null) {
-            url += `batch=${data.data.batch_number}&`;
-        }
-        if (data.data.faculty) {
-            url += `faculty=${data.data.faculty}&`;
-        }
-        if (data.data.exam_type) {
-            url += `exam_type=${data.data.exam_type}&`;
-        }
-        // Remove the trailing "&" if present
-        url = url.slice(0, -1);
-        console.log('Redirecting to:', url);
-        window.location.href = url;          
-    }) 
-    .catch(error => {
-        if (error.response && error.response.data && error.response.data.errors) {
-            console.error('Validation Errors:', error.response.data.errors);
-        } else {
-            console.error('Fetch error:', error);
-        }
-        closeCourseModal();  // Close the modal in either case
-    })
-    .finally(() => {
-        closeFilterModal();
-    });
-}
-function fetchcourseInfo(formData) {
-    fetch(courseInfoUrl, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.log('unsucessful promise');
-            throw new Error('Network response was not ok');
-        }
-        console.log('sucessful promise');
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-        var successMessage = 'showing result of ' + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
-        console.log(successMessage);
-        let url = '/examsection/viewcourseInfo/?';
-        if (data.data.semester) {
-            url += `semester=${data.data.semester}&`;
-        }
-        if (data.data.faculty) {
-            url += `faculty=${data.data.faculty}&`;
-        }
-        // Remove the trailing "&" if present
-        url = url.slice(0, -1);
-        console.log('Redirecting to:', url);
-        window.location.href = url;          
-    }) 
-    .catch(error => {
-        if (error.response && error.response.data && error.response.data.errors) {
-            console.error('Validation Errors:', error.response.data.errors);
-        } else {
-            console.error('Fetch error:', error);
-        }
-        closeCourseModal();  // Close the modal in either case
-    })
-    .finally(() => {
-        closeCourseModal();
-    });
-}
-function fetchstudentResult(formData){
-    console.log('url yo:', viewmyResultUrl) ;
-    fetch(viewmyResultUrl, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        if(!response.ok){
-            console.log('Unsuccessful promise');
-            return response.json();
-        }
-        else if (response.ok){
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log('unsucessfull promise');
+                throw new Error('Network response was not ok');
+            }
             console.log('successful promise');
             return response.json();
-        }
-    })
-    .then(data => {
-        console.log(data);
-        if (data.success) {
-            var successMessage = 'showing result of ' + data.data.exam_type + ', sem: ' + data.data.semester;
+        })
+        .then(data => {
+            console.log(data);
+            var successMessage = 'showing result of ' + data.data.exam_type + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
             console.log(successMessage);
-            let url = '/dashboard/student/viewmyResult/?';
+            let url = '/examsection/viewresult/?';
             if (data.data.semester) {
                 url += `semester=${data.data.semester}&`;
+            }
+            if (data.data.batch_number !== null) {
+                url += `batch=${data.data.batch_number}&`;
+            }
+            if (data.data.faculty) {
+                url += `faculty=${data.data.faculty}&`;
             }
             if (data.data.exam_type) {
                 url += `exam_type=${data.data.exam_type}&`;
@@ -275,142 +187,227 @@ function fetchstudentResult(formData){
             // Remove the trailing "&" if present
             url = url.slice(0, -1);
             console.log('Redirecting to:', url);
-            window.location.href = url; 
-        }   
-        else {
-            console.error('Error:', data.error);
-            alert(data.error);
-        }      
-    })
-    .finally(() => {
-        closeFilterModal();
-    });
+            window.location.href = url;
+        })
+        .catch(error => {
+            if (error.response && error.response.data && error.response.data.errors) {
+                console.error('Validation Errors:', error.response.data.errors);
+            } else {
+                console.error('Fetch error:', error);
+            }
+            closeCourseModal(); // Close the modal in either case
+        })
+        .finally(() => {
+            closeFilterModal();
+        });
 }
-function fetchteacheradd(formData){
-    fetch(teacheraddResultUrl, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        if(!response.ok){
-            console.log('Unsuccessful promise');
+
+function fetchcourseInfo(formData) {
+    fetch(courseInfoUrl, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log('unsucessful promise');
+                throw new Error('Network response was not ok');
+            }
+            console.log('sucessful promise');
             return response.json();
-        }
-        else if (response.ok){
-            console.log('successful promise');
-            return response.json();
-        }
-    })
-    .then(data => {
-        console.log(data);
-        if (data.success) {
-            var successMessage = 'Adding result of ' + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty + 'subject:' + data.data.subject_Name;
+        })
+        .then(data => {
+            console.log(data);
+            var successMessage = 'showing result of ' + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
             console.log(successMessage);
-            window.location.href =`/dashboard/teacher/addResult/${data.data.semester}/${data.data.batch_number}/${data.data.faculty}/${data.data.subject_Name}/`;
-        }
-        else {
-            console.error('Error:', data.error);
-            alert(data.error);
-        } 
-    })
-    .finally(() => {
-        closeFilterModal();
-    });
-} 
-function fetchteacherview(formData){
-    console.log('url yo:', teacherviewResultUrl) ;
-    fetch(teacherviewResultUrl, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        if(!response.ok){
-            console.log('Unsuccessful promise');
-            return response.json();
-        }
-        else if (response.ok){
-            console.log('successful promise');
-            return response.json();
-        }
-    })
-    .then(data => {
-        console.log(data);
-        if (data.success) {
-            var successMessage = 'showing result of regular' + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty + 'subject:' + data.data.subject_Name;
-            console.log(successMessage);
-            let url = '/dashboard/teacher/viewResult/?';
+            let url = '/examsection/viewcourseInfo/?';
             if (data.data.semester) {
                 url += `semester=${data.data.semester}&`;
             }
             if (data.data.faculty) {
-                url += `exam_type=${data.data.faculty}&`;
-            }
-            if (data.data.batch) {
-                url += `exam_type=${data.data.batch}&`;
-            }
-            if (data.data.subject) {
-                url += `exam_type=${data.data.subject}&`;
+                url += `faculty=${data.data.faculty}&`;
             }
             // Remove the trailing "&" if present
             url = url.slice(0, -1);
             console.log('Redirecting to:', url);
-            window.location.href = url; 
-        }   
-        else {
-            console.error('Error:', data.error);
-            alert(data.error);
-        }      
-    })
-    .finally(() => {
-        closeFilterModal();
-    });
+            window.location.href = url;
+        })
+        .catch(error => {
+            if (error.response && error.response.data && error.response.data.errors) {
+                console.error('Validation Errors:', error.response.data.errors);
+            } else {
+                console.error('Fetch error:', error);
+            }
+            closeCourseModal(); // Close the modal in either case
+        })
+        .finally(() => {
+            closeCourseModal();
+        });
 }
-function fetchStudnetAnalysis(formData){
+
+function fetchstudentResult(formData) {
+    console.log('url yo:', viewmyResultUrl);
+    fetch(viewmyResultUrl, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log('Unsuccessful promise');
+                return response.json();
+            } else if (response.ok) {
+                console.log('successful promise');
+                return response.json();
+            }
+        })
+        .then(data => {
+            console.log(data);
+            if (data.success) {
+                var successMessage = 'showing result of ' + data.data.exam_type + ', sem: ' + data.data.semester;
+                console.log(successMessage);
+                let url = '/dashboard/student/viewmyResult/?';
+                if (data.data.semester) {
+                    url += `semester=${data.data.semester}&`;
+                }
+                if (data.data.exam_type) {
+                    url += `exam_type=${data.data.exam_type}&`;
+                }
+                // Remove the trailing "&" if present
+                url = url.slice(0, -1);
+                console.log('Redirecting to:', url);
+                window.location.href = url;
+            } else {
+                console.error('Error:', data.error);
+                alert(data.error);
+            }
+        })
+        .finally(() => {
+            closeFilterModal();
+        });
+}
+
+function fetchteacheradd(formData) {
+    fetch(teacheraddResultUrl, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log('Unsuccessful promise');
+                return response.json();
+            } else if (response.ok) {
+                console.log('successful promise');
+                return response.json();
+            }
+        })
+        .then(data => {
+            console.log(data);
+            if (data.success) {
+                var successMessage = 'Adding result of ' + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty + 'subject:' + data.data.subject_Name;
+                console.log(successMessage);
+                window.location.href = `/dashboard/teacher/addResult/${data.data.semester}/${data.data.batch_number}/${data.data.faculty}/${data.data.subject_Name}/`;
+            } else {
+                console.error('Error:', data.error);
+                alert(data.error);
+            }
+        })
+        .finally(() => {
+            closeFilterModal();
+        });
+}
+
+function fetchteacherview(formData) {
+    console.log('url yo:', teacherviewResultUrl);
+    fetch(teacherviewResultUrl, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log('Unsuccessful promise');
+                return response.json();
+            } else if (response.ok) {
+                console.log('successful promise');
+                return response.json();
+            }
+        })
+        .then(data => {
+            console.log(data);
+            if (data.success) {
+                var successMessage = 'showing result of regular' + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty + 'subject:' + data.data.subject_Name;
+                console.log(successMessage);
+                let url = '/dashboard/teacher/viewResult/?';
+                if (data.data.semester) {
+                    url += `semester=${data.data.semester}&`;
+                }
+                if (data.data.faculty) {
+                    url += `exam_type=${data.data.faculty}&`;
+                }
+                if (data.data.batch) {
+                    url += `exam_type=${data.data.batch}&`;
+                }
+                if (data.data.subject) {
+                    url += `exam_type=${data.data.subject}&`;
+                }
+                // Remove the trailing "&" if present
+                url = url.slice(0, -1);
+                console.log('Redirecting to:', url);
+                window.location.href = url;
+            } else {
+                console.error('Error:', data.error);
+                alert(data.error);
+            }
+        })
+        .finally(() => {
+            closeFilterModal();
+        });
+}
+
+function fetchStudnetAnalysis(formData) {
     fetch(viewResultUrl, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.log('unsucessfull promise');
-            throw new Error('Network response was not ok');
-        }
-        console.log('successful promise');
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-        var successMessage = 'showing result of ' + data.data.exam_type + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
-        console.log(successMessage);
-        let url = '/examsection/studentanalysis/?';
-        if (data.data.semester) {
-            url += `semester=${data.data.semester}&`;
-        }
-        if (data.data.batch_number !== null) {
-            url += `batch=${data.data.batch_number}&`;
-        }
-        if (data.data.faculty) {
-            url += `faculty=${data.data.faculty}&`;
-        }
-        if (data.data.exam_type) {
-            url += `exam_type=${data.data.exam_type}&`;
-        }
-        // Remove the trailing "&" if present
-        url = url.slice(0, -1);
-        console.log('Redirecting to:', url);
-        window.location.href = url;          
-    }) 
-    .catch(error => {
-        if (error.response && error.response.data && error.response.data.errors) {
-            console.error('Validation Errors:', error.response.data.errors);
-        } else {
-            console.error('Fetch error:', error);
-        }
-        closeCourseModal();  // Close the modal in either case
-    })
-    .finally(() => {
-        closeFilterModal();
-    });
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log('unsucessfull promise');
+                throw new Error('Network response was not ok');
+            }
+            console.log('successful promise');
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            var successMessage = 'showing result of ' + data.data.exam_type + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
+            console.log(successMessage);
+            let url = '/examsection/studentanalysis/?';
+            if (data.data.semester) {
+                url += `semester=${data.data.semester}&`;
+            }
+            if (data.data.batch_number !== null) {
+                url += `batch=${data.data.batch_number}&`;
+            }
+            if (data.data.faculty) {
+                url += `faculty=${data.data.faculty}&`;
+            }
+            if (data.data.exam_type) {
+                url += `exam_type=${data.data.exam_type}&`;
+            }
+            // Remove the trailing "&" if present
+            url = url.slice(0, -1);
+            console.log('Redirecting to:', url);
+            window.location.href = url;
+        })
+        .catch(error => {
+            if (error.response && error.response.data && error.response.data.errors) {
+                console.error('Validation Errors:', error.response.data.errors);
+            } else {
+                console.error('Fetch error:', error);
+            }
+            closeCourseModal(); // Close the modal in either case
+        })
+        .finally(() => {
+            closeFilterModal();
+        });
 }
 
 //COOKIESSSS
@@ -437,12 +434,12 @@ function getCookie(name) {
 
 function openCourseModal() {
     console.log('opened filter for course');
-     document.getElementById("courseModal").style.display = "flex"; 
+    document.getElementById("courseModal").style.display = "flex";
 }
 
 function closeCourseModal() {
     console.log('closing course filter');
-   document.getElementById("courseModal").style.display = "none";
+    document.getElementById("courseModal").style.display = "none";
 }
 
 function get_filter_metadata() {
@@ -481,7 +478,8 @@ function get_filter_metadata() {
         return null; // or return an empty object, depending on your requirements
     }
 }
-function get_course_filter_metadata(){
+
+function get_course_filter_metadata() {
     var faculty = document.getElementById('courseFaculty');
     var semester = document.getElementById('courseSemester');
 
@@ -503,15 +501,15 @@ function get_course_filter_metadata(){
         return null; // or return an empty object, depending on your requirements
     }
 }
-    
+
 function importData() {
     var fileInput = document.getElementById('fileInput');
 
-    fileInput.addEventListener('change', function (e) {
+    fileInput.addEventListener('change', function(e) {
         var file = e.target.files[0];
 
         var reader = new FileReader();
-        reader.onload = function (e) {
+        reader.onload = function(e) {
             var data = e.target.result;
             var workbook = XLSX.read(data, { type: 'binary' });
             var sheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -573,50 +571,49 @@ function submitData(url) {
     console.log('Collected Data:', data);
 
     // Check if there is any data to submit
-    if (data.length > 1) { 
+    if (data.length > 1) {
         var semester = document.getElementById('submitButton').getAttribute('data-semester');
         var batch = document.getElementById('submitButton').getAttribute('data-batch');
-        var faculty = document.getElementById('submitButton').getAttribute('data-faculty'); 
+        var faculty = document.getElementById('submitButton').getAttribute('data-faculty');
         var exam_type = document.getElementById('submitButton').getAttribute('data-exam_type'); //yesma admin bata huda exam_type nai aaunxa teacher bata huda subject ko value ho haiii: lazy broo
         console.log('we got the stupid data');
-        fetch(url, {  
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-            body: JSON.stringify({ 
-                data: data,
-                semester:semester,
-                batch:batch,
-                faculty:faculty,
-                exam_type:exam_type,//yesma admin bata huda exam_type nai aaunxa teacher bata huda subject ko value ho haiii: lazy broo
-            }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                console.log('Unsuccessful promise');
-                if (response.status === 400) {
-                    // Handle validation error
-                    return response.json().then(errorData => {
-                        toastr.warning(`Validation error: ${errorData.error}`);
-                    });
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    data: data,
+                    semester: semester,
+                    batch: batch,
+                    faculty: faculty,
+                    exam_type: exam_type, //yesma admin bata huda exam_type nai aaunxa teacher bata huda subject ko value ho haiii: lazy broo
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.log('Unsuccessful promise');
+                    if (response.status === 400) {
+                        // Handle validation error
+                        return response.json().then(errorData => {
+                            toastr.warning(`Validation error: ${errorData.error}`);
+                        });
+                    } else {
+                        // Handle other errors
+                        toastr.warning('Error submitting data. Please try again.');
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
                 } else {
-                    // Handle other errors
-                    toastr.warning('Error submitting data. Please try again.');
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    console.log('Successful promise');
+                    toastr.success('Data submitted successfully!');
                 }
-            } else {
-                console.log('Successful promise');
-                toastr.success('Data submitted successfully!');
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-            toastr.error('Error submitting data. Please try again.');
-        });
-    } 
-    else {
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                toastr.error('Error submitting data. Please try again.');
+            });
+    } else {
         toastr.warning('No data to submit. Please import a file.');
     }
 }

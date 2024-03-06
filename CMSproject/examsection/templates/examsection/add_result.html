@@ -63,6 +63,10 @@
             <li class="pageLink" onclick="handleOptionClick('view_result')">
                 <a>View Results</a>
             </li>
+            <li class="pageLink" onclick="openHelpModal()">
+                <a>Help</a>
+            </li>
+
         </ul>
     </aside>
    <!-- <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div> -->
@@ -104,7 +108,7 @@
                 </div>
 
                 <div class="button-container">
-                    <button type="button" id="gobutton" onclick="applyFilters()">Go</button>
+                    <button type="button" id="goButton" onclick="applyFilters()">Go</button>
                 </div>
             </form>
         </div>
@@ -163,7 +167,7 @@
                 </select>
 
                 <div class="button-container">
-                    <button type="button" onclick="applyCourseFilters()"> Go </button>
+                    <button type="button" id="goButton" onclick="applyCourseFilters()"> Go </button>
                 </div>
             </form>
         </div>
@@ -198,6 +202,7 @@
         var courseInfoUrl = "{% url 'handle_course_Info_submission' %}";
         var studentAnalysisUrl = "{% url 'handle_student_analysis_submission' %}";
     </script>
+    <script src="{% static 'examsection/js/exam.js' %}"></script>
     <script src="{% static 'examsection/js/exam.js' %}"></script>
 </body>
 

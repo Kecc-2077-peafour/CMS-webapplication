@@ -4,7 +4,7 @@ const navbarHeight = document.getElementsByClassName("navbar")[0].clientHeight;
 const windowHeight = window.innerHeight;
 const profileOptions = document.getElementsByClassName("profileOptions")[0];
 
-function adjustHeight(){
+function adjustHeight() {
     aside.style.height = (windowHeight - navbarHeight) + 'px';
     main.style.height = (windowHeight - navbarHeight) + 'px';
     main.style.maxHeight = (windowHeight - navbarHeight) + 'px';
@@ -20,17 +20,18 @@ toastr.options = {
     showMethod: 'show',
     hideMethod: 'hide'
 };
-function showProfileOptions(){
-    if (profileOptions.style.display === '' || profileOptions.style.display === 'none'){
+
+function showProfileOptions() {
+    if (profileOptions.style.display === '' || profileOptions.style.display === 'none') {
         profileOptions.style.display = 'block';
-    }
-    else{
+    } else {
         profileOptions.style.display = 'none';
     }
 }
- var box = document.getElementById('batta');
- var down = false;
- function togglenoti(boxId) {
+var box = document.getElementById('batta');
+var down = false;
+
+function togglenoti(boxId) {
     // var box = document.getElementById(boxId);
     if (box) {
         if (down) {
@@ -42,45 +43,46 @@ function showProfileOptions(){
         } else {
             box.style.opacity = 1;
             down = true;
-            box.style.height = '400px';
+            box.style.height = '100%';
         }
     } else {
         console.error("Notification box not found.");
     }
- }
- function getAllNotificationIds() {
-     console.log('gather them notification ids,customer ma xam');
-     var notificationElements = document.querySelectorAll('.notification-item');
-     var notificationIds = Array.from(notificationElements).map(function(element) {
-         return element.dataset.notificationId;
-     });
-     return notificationIds;
- }
- 
- function markNotificationsAsSeen(notificationIds) {
-     console.log('notificxation laii seen garana janey customer ma xam');
-     var csrfToken = getCookie('csrftoken');
-     fetch(marknotificationUrl, {
-         method: 'POST',
-         headers: {
-             'Content-Type': 'application/json',
-             'X-CSRFToken': csrfToken,
-         },
-         body: JSON.stringify({ 'notification_ids': notificationIds }),
-     })
-     .then(response => {
-         if (!response.ok) {
-             throw new Error('Network response was not ok');
-         }
-         return response.json();
-     })
-     .then(data => {
-         console.log('Notifications marked as seen:', data);
-     })
-     .catch(error => {
-         console.error('Error marking notifications as seen:', error);
-     });
- }
+}
+
+function getAllNotificationIds() {
+    console.log('gather them notification ids,customer ma xam');
+    var notificationElements = document.querySelectorAll('.notification-item');
+    var notificationIds = Array.from(notificationElements).map(function(element) {
+        return element.dataset.notificationId;
+    });
+    return notificationIds;
+}
+
+function markNotificationsAsSeen(notificationIds) {
+    console.log('notificxation laii seen garana janey customer ma xam');
+    var csrfToken = getCookie('csrftoken');
+    fetch(marknotificationUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({ 'notification_ids': notificationIds }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Notifications marked as seen:', data);
+        })
+        .catch(error => {
+            console.error('Error marking notifications as seen:', error);
+        });
+}
 
 var currentItem = null; // To store the reference to the currently selected item
 
@@ -92,7 +94,7 @@ function openQuantityPopup(button) {
     quantityPopup.style.display = "block";
     quantityPopup.style.top = button.offsetTop + button.offsetHeight + 'px';
     quantityPopup.style.left = button.offsetLeft + 'px';
- }
+}
 
 function getCookie(name) {
     var cookieValue = null;
@@ -112,8 +114,9 @@ function getCookie(name) {
 function orderItem(button) {
     console.log('customer just ordered');
     console.log(button.parentElement.parentElement.parentElement);
-    currentItem=button.parentElement.parentElement.parentElement;
-    var quantity = document.getElementById("quantityInput").value;
+    currentItem = button.parentElement.parentElement.parentElement;
+    var quantity = currentItem.querySelector("#quantityInput").value;
+    debugger;
     var itemName = currentItem.getElementsByClassName('itemName')[0].innerText;
     var itemImage = currentItem.parentElement.querySelector('img').src;
     var itemId = currentItem.dataset.itemId; // assuming the dataset is on the parent element
@@ -136,30 +139,30 @@ function orderItem(button) {
         };
         var csrfToken = getCookie('csrftoken');
         fetch(orderurl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken,
-            },
-            body: JSON.stringify({
-                orderDetails: orderDetails,
-            }),
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Order placed');
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({
+                    orderDetails: orderDetails,
+                }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Order placed');
 
-            } else {
-                alert(`order could not be placed`);
-            }
-        });
+                } else {
+                    alert(`order could not be placed`);
+                }
+            });
         closePopup();
     } else {
         toastr.error('Please enter a valid quantity.');
     }
 }
 
-function closePopup(){
+function closePopup() {
     var quantityPopup = currentItem.querySelector('.quantity-popup');
     quantityPopup.style.display = "none";
 }

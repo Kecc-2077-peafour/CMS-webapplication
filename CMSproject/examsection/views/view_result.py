@@ -65,6 +65,10 @@ def viewresult_view(request):
 
     # Convert the dictionary values to a list for easier iteration in the template
         organized_results = list(results_by_student.values())
+        organized_results = sorted(organized_results, key=lambda x: x['student'].rollNo)
+        print("Results after sorting:")
+        for result in organized_results:
+            print(result)
         context = {
             'admin_instance': admin_instance,
             'semester': semester,

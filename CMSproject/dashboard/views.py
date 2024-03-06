@@ -325,6 +325,10 @@ def viewResult_view(request):
             results_by_student[student_id]['subjects'].append(result)
             print(f"Result: {result}")
         organized_results = list(results_by_student.values())
+        organized_results = sorted(organized_results, key=lambda x: x['student'].rollNo)
+        print("Results after sorting:")
+        for result in organized_results:
+            print(result)
         context = {
             'teacher_instance': teacher_instance,
             'semester': semester,

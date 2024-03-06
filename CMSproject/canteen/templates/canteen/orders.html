@@ -15,7 +15,7 @@
             margin: 10px;
             padding: 5px;
             background-color: #a7b9c6;
-            width:40%;
+            width:250px;
             border-radius: 10%;
             height: fit-content;
             align-items: center;
@@ -113,7 +113,7 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" name="csrfmiddlewaretoken" value="{% csrf_token %}">
+        {% comment %} <input type="hidden" name="csrfmiddlewaretoken" value="{% csrf_token %}"> {% endcomment %}
         <div id="displayOrder">
             {% for order in order_items %}
             {% if order.order.status == "pending" %}
@@ -147,6 +147,7 @@
         </div>
 
     </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         var confirmOrderurl = "{% url 'order_confirmed' %}";
         var OrderCompletedurl = "{% url 'order_completed' %}";

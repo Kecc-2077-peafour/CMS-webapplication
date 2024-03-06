@@ -1,5 +1,3 @@
-
-
 // Function to enable editing
 function enableEdit() {
     console.log('edit editing function');
@@ -35,15 +33,15 @@ function saveData() {
             var cell = cells[j];
             var originalValue = cell.getAttribute('data-original-value');
             var currentValue = cell.textContent;
-            var subjectId = cell.getAttribute('data-subject-id');  // Assuming data-entry-id is the subjectId
-            var marksId = cell.getAttribute('data-marks-id');  // Assuming data-entry-id is the subjectId
-            console.log('student: marks',studentId,subjectId,marksId,originalValue,currentValue);
+            var subjectId = cell.getAttribute('data-subject-id'); // Assuming data-entry-id is the subjectId
+            var marksId = cell.getAttribute('data-marks-id'); // Assuming data-entry-id is the subjectId
+            console.log('student: marks', studentId, subjectId, marksId, originalValue, currentValue);
             // Check if the value has changed
             if (originalValue !== currentValue) {
                 data.push({
                     'studentId': studentId,
                     'subjectId': subjectId,
-                    'marksId':marksId,
+                    'marksId': marksId,
                     'previousData': originalValue,
                     'presentData': currentValue
                 });
@@ -51,30 +49,31 @@ function saveData() {
         }
     }
     console.log('Collected Data:', data);
-    fetch(editresultUrl, {  
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken'),
-        },
-        body: JSON.stringify({ 
-            data: data,
-        }),
-    })
-    .then(response => {
-        if (response.ok) {
-            // Handle success
-            alert('Edited successfully!');
-            // You can also perform additional actions or update the UI as needed
-        } else if (response.status === 400) {
-            // Handle bad request
-            alert('Invalid Data: Please enter valid data');
-        } else {
-            // Handle other errors
-            alert('An unexpected error occurred');
-        }
-    })
+    fetch(editresultUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify({
+                data: data,
+            }),
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle success
+                alert('Edited successfully!');
+                // You can also perform additional actions or update the UI as needed
+            } else if (response.status === 400) {
+                // Handle bad request
+                alert('Invalid Data: Please enter valid data');
+            } else {
+                // Handle other errors
+                alert('An unexpected error occurred');
+            }
+        })
 }
+
 function enableEditing() {
     console.log('enable editing function');
     editingAllowed = true;
