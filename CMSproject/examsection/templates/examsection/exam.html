@@ -51,9 +51,11 @@
             <li class="pageLink" onclick="window.location.href=`{% url 'examsection_view' %}`">
                 <a class="activePage"> Home</a>
             </li>
-            <li class="pageLink" onclick="handleOptionClick('student_analysis')">
-                <a>Student Analysis</a>
-            </li>
+    
+      <li class="pageLink" onmouseover="showModal1()" onmouseout="hideModal1()">
+        <a>Result Analysis</a>
+    </li>
+                
             <li class="pageLink" onclick="handleOptionClick('course_Info')">
                 <a>Course Info</a>
             </li>
@@ -63,11 +65,34 @@
             <li class="pageLink" onclick="handleOptionClick('view_result')">
                 <a>View Results</a>
             </li>
-            <li class="pageLink" onclick="handleOptionClick('')">
+            <li class="pageLink" onclick="openHelpModal()">
                 <a>Help</a>
             </li>
         </ul>
     </aside>
+
+    <div id="help" onclick="openHelpModal()">Help</div>
+
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <h2>Help Instructions</h2>
+            <ol>
+                <li>Submit the result in the following Excel format:</li>
+                <ul>
+                    <li>1. First row, first column should be named 'Rollno' and its column should contain student's roll number.</li>
+                    <li>2. First row, second column should be named 'name' and its column should contain student's full name.</li>
+                    <li>3. From the first row's third column onwards, write subjects' names and students' respective marks in the columns.</li>
+                    <li>4. For a new subject entry, add it in the first row, next column.</li>
+                    <li>5. Once data has been submitted for a certain selected filter, you cannot add the result for it but you can edit it using view result. </li>
+                </ul>
+            </ol>
+            <div class="button-container">
+                <button type="button" onclick="closeHelpModal()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+
     
     <!-- <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div> -->
 
@@ -112,6 +137,12 @@
                     <button id="goButton" type="button" onclick="applyFilters()">Go</button>
                 </div>
             </form>
+        </div>
+    </div>
+    <div id="modal1" class="modal1" onmouseover="showModal1()" onmouseout="hideModal1()">
+        <div class="modal1-content">
+            <a onclick="handleOptionClick('student_analysis')">Student Analysis</a>
+            <a onclick="handleOptionClick('subject_analysis')">Subject Analysis</a>
         </div>
     </div>
     <div id="filter" onclick="openCourseModal()">🔍 Filter</div>

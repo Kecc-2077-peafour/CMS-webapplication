@@ -1,10 +1,14 @@
+// Initialize Toastr
+toastr.options = {
+    closeButton: true,
+    debug: false,
+    // other options...
+};
+
 // Function to enable editing
 function enableEdit() {
-    console.log('edit editing function');
     if (editingAllowed) {
-        console.log('editing allowed if');
-        var cells = document.querySelectorAll('.table-hover td');
-        cells.forEach(function(cell, index) {
+        document.querySelectorAll('.table-hover td').forEach(function (cell, index) {
             // Skip first two columns (index 0 and 1)
             if (index > 1) {
                 cell.contentEditable = true;
@@ -13,73 +17,111 @@ function enableEdit() {
     }
 }
 
-
-// Function to save edited data
-function saveData() {
-    editingAllowed = false;
-    var cells = document.querySelectorAll('.table-hover td');
-    cells.forEach(function(cell) {
+// Function to disable editing
+function disableEdit() {
+    document.querySelectorAll('.table-hover td').forEach(function (cell) {
         cell.contentEditable = false;
     });
+}
+
+// Function to collect edited data
+function collectEditedData() {
+    var data = [];
+    var validationErrors = [];
+
     var table = document.getElementById('table-fill');
     var rows = table.rows;
-    var data = [];
-    // Iterate through the cells of the table
+
     for (var i = 1; i < rows.length; i++) {
         var cells = rows[i].cells;
         var studentId = rows[i].cells[1].getAttribute('data-student-id');
-        // Iterate through the cells of each row starting from index 2
+
         for (var j = 2; j < cells.length; j++) {
             var cell = cells[j];
             var originalValue = cell.getAttribute('data-original-value');
             var currentValue = cell.textContent;
-            var subjectId = cell.getAttribute('data-subject-id'); // Assuming data-entry-id is the subjectId
-            var marksId = cell.getAttribute('data-marks-id'); // Assuming data-entry-id is the subjectId
-            console.log('student: marks', studentId, subjectId, marksId, originalValue, currentValue);
-            // Check if the value has changed
+            var subjectId = cell.getAttribute('data-subject-id');
+            var marksId = cell.getAttribute('data-marks-id');
+
             if (originalValue !== currentValue) {
-                data.push({
-                    'studentId': studentId,
-                    'subjectId': subjectId,
-                    'marksId': marksId,
-                    'previousData': originalValue,
-                    'presentData': currentValue
-                });
+                var numericValue = parseFloat(currentValue);
+
+                if (isNaN(numericValue) || numericValue < 0 || numericValue > 100) {
+                    validationErrors.push('Invalid marks for Student ID: ' + studentId);
+                } else {
+                    data.push({
+                        'studentId': studentId,
+                        'subjectId': subjectId,
+                        'marksId': marksId,
+                        'previousData': originalValue,
+                        'presentData': currentValue
+                    });
+                }
             }
         }
     }
+
+    // Display validation error only once
+    if (validationErrors.length > 0) {
+        toastr.error(validationErrors[0]);
+        return [];
+    }
+
     console.log('Collected Data:', data);
-    fetch(editresultUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-            body: JSON.stringify({
-                data: data,
-            }),
-        })
-        .then(response => {
-            if (response.ok) {
-                // Handle success
-                alert('Edited successfully!');
-                // You can also perform additional actions or update the UI as needed
-            } else if (response.status === 400) {
-                // Handle bad request
-                alert('Invalid Data: Please enter valid data');
-            } else {
-                // Handle other errors
-                alert('An unexpected error occurred');
-            }
-        })
+    return data;
 }
 
+// Function to handle fetch response
+function handleResponse(response) {
+    if (response.ok) {
+        var data = collectEditedData();
+
+        // Display success message only when data is less than 100
+        if (data.length > 0 && parseFloat(data[0].presentData) < 100) {
+            toastr.success('Successfully saved!');
+            updateTableData();
+        }
+    } else if (response.status === 400) {
+        toastr.error('Invalid Data: Please enter valid data');
+    } else {
+        toastr.error('An unexpected error occurred');
+    }
+}
+
+// Function to handle fetch errors
+function handleError(error) {
+    console.error('Fetch error:', error);
+    toastr.error('An unexpected error occurred');
+}
+
+// Function to save edited data
+function saveData() {
+    editingAllowed = false;
+    disableEdit();
+    var data = collectEditedData();
+
+    fetch(editresultUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({
+            data: data,
+        }),
+    })
+        .then(handleResponse)
+        .catch(handleError);
+}
+
+// Function to enable editing
 function enableEditing() {
     console.log('enable editing function');
     editingAllowed = true;
     enableEdit();
 }
 
+// Function to get cookie value
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -93,4 +135,31 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+// Function to update table data after successful save
+function updateTableData() {
+    var table = document.getElementById('table-fill');
+    var rows = table.rows;
+
+    for (var i = 1; i < rows.length; i++) {
+        var cells = rows[i].cells;
+
+        for (var j = 2; j < cells.length; j++) {
+            var cell = cells[j];
+            var marksId = cell.getAttribute('data-marks-id');
+            var editedData = findEditedData(marksId);
+
+            if (editedData) {
+                cell.textContent = editedData.presentData;
+                cell.setAttribute('data-original-value', editedData.presentData);
+            }
+        }
+    }
+}
+
+// Function to find edited data by marksId
+function findEditedData(marksId) {
+    var data = collectEditedData();
+    return data.find(item => item.marksId === marksId);
 }

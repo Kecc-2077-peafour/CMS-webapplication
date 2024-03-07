@@ -51,8 +51,8 @@
             <li class="pageLink" onclick="handleOptionClick('home')">
                 <a href="{% url 'examsection_view' %}">Home</a>
             </li>
-            <li class="pageLink" onclick="handleOptionClick('student_analysis')">
-                <a>Student Analysis</a>
+            <li class="pageLink" onmouseover="showModal1()" onmouseout="hideModal1()">
+                <a>Result Analysis</a>
             </li>
             <li class="pageLink" onclick="handleOptionClick('course_Info')">
                 <a>Course Info </a>
@@ -66,9 +66,16 @@
             <li class="pageLink" onclick="openHelpModal()">
                 <a>Help</a>
             </li>
+            
 
         </ul>
     </aside>
+    <div id="modal1" class="modal1" onmouseover="showModal1()" onmouseout="hideModal1()">
+        <div class="modal1-content">
+            <a onclick="handleOptionClick('student_analysis')">Student Analysis</a>
+            <a onclick="handleOptionClick('subject_analysis')">Subject Analysis</a>
+        </div>
+    </div>
    <!-- <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div> -->
 
     <!-- Modal -->
@@ -119,25 +126,21 @@
     <div id="helpModal" class="modal">
         <div class="modal-content">
             <h2>Help Instructions</h2>
-            <p>
-                Hi sweetie, I heard you need my help to add results, I'll take you through procedures you need to follow.
-                I don't know the procedures yet, but we will get there.
-                The best solution would be to not take exams at all.
-                I wish I were a Jane Austen novel's character hehehee.
-                Help and Support: If you encounter any challenges, our support team is readily available.
-                Reach out for technical assistance, clarification on exam-related queries, or any other concerns you may have.
-                By following these guidelines, you're set to optimize your exam management experience.
-                We're committed to supporting your academic journey and ensuring a reliable and efficient
-                exam management process. Best of luck!
-                .
-                .
-                .
-            </p>
+            <ol>
+                <li>Submit the result in the following Excel format:</li>
+                <ul>
+                    <li>1. First row, first column should be named 'Rollno' and its column should contain student's roll number.</li>
+                    <li>2. First row, second column should be named 'name' and its column should contain student's full name.</li>
+                    <li>3. From the first row's third column onwards, write subjects' names and students' respective marks in the columns.</li>
+                    <li>4. For a new subject entry, add it in the first row, next column.</li>
+                </ul>
+            </ol>
             <div class="button-container">
                 <button type="button" onclick="closeHelpModal()">Close</button>
             </div>
         </div>
     </div>
+    
 
     <!-- Another Modal for Courses -->
     <div id="filter" onclick="openCourseModal()">🔍 Filter</div>

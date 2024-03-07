@@ -11,7 +11,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/exam.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'examsection/css/view.css' %}">
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    </head>
 
 <body>
 
@@ -50,8 +53,8 @@
             <li class="pageLink" onclick="handleOptionClick('home')">
                 <a href="{% url 'examsection_view' %}">Home</a>
             </li>
-            <li class="pageLink" onclick="handleOptionClick('student_analysis')">
-                <a>Student Analysis</a>
+            <li class="pageLink" onmouseover="showModal1()" onmouseout="hideModal1()">
+                <a>Result Analysis</a>
             </li>
             <li class="pageLink" onclick="handleOptionClick('course_Info')">
                 <a>Course Info </a>
@@ -64,6 +67,12 @@
             </li>
         </ul>
     </aside>
+    <div id="modal1" class="modal1" onmouseover="showModal1()" onmouseout="hideModal1()">
+        <div class="modal1-content">
+            <a onclick="handleOptionClick('student_analysis')">Student Analysis</a>
+            <a onclick="handleOptionClick('subject_analysis')">Subject Analysis</a>
+        </div>
+    </div>
 
 
     <div class="main">

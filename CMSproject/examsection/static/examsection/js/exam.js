@@ -105,7 +105,11 @@ function applyFilters() {
             break;
         case 'student_analysis':
             console.log(studentAnalysisUrl);
-            fetchStudnetAnalysis(formData);
+            fetchStudnetAnalysis(formData, selectedOption);
+            break;
+            case 'subject_analysis':
+            console.log(studentAnalysisUrl);
+            fetchStudentAnalysis(formData, selectedOption);
             break;
         case 'course_Info':
             console.log(courseInfoUrl);
@@ -244,11 +248,14 @@ function fetchcourseInfo(formData) {
         });
 }
 
-function fetchstudentResult(formData) {
+function fetchstudentResult(formData, selectedOption) {
     console.log('url yo:', viewmyResultUrl);
     fetch(viewmyResultUrl, {
             method: 'POST',
-            body: formData,
+            body: ({
+                'formData': formData,
+                'selectedOption' : selectedOption,
+            }) 
         })
         .then(response => {
             if (!response.ok) {
@@ -643,3 +650,25 @@ toastr.options = {
     timeOut: 5000,
 };
 toastr.success('This is a success message');
+// Show modal function
+// Show modal function
+function showModal1() {
+    var modal = document.getElementById("modal1");
+    modal.style.display = "block";
+}
+
+// Hide modal function
+function hideModal1() {
+    var modal = document.getElementById("modal1");
+    modal.style.display = "none";
+}
+function openHelpModal() {
+    var helpModal = document.getElementById("helpModal");
+    helpModal.style.display = "block";
+}
+
+// Close Help modal function
+function closeHelpModal() {
+    var helpModal = document.getElementById("helpModal");
+    helpModal.style.display = "none";
+}
