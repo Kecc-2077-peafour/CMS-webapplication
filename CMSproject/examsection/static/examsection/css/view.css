@@ -206,3 +206,68 @@ button:hover {
 .add-student-button:hover {
     background-color: #3c9b10;
 }
+
+/* Toastr Notification Styles */
+#toast-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    z-index: 9999;
+}
+
+.toast {
+    position: relative;
+    margin: 0 0 6px;
+    padding: 15px 15px 15px 10px;
+    width: 300px;
+    border-radius: 3px;
+    cursor: pointer;
+    background: #333;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: -325px;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.toast:hover {
+    box-shadow: 0 0 12px #fff;
+    margin-right: 0;
+}
+
+.toast-close-button {
+    position: relative;
+    right: -10px;
+    top: -10px;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+}
+
+.toast-close-button:hover {
+    color: #eee;
+}
+
+.toast-info {
+    background: #3498db;
+}
+
+.toast-success {
+    background: #07bc0c;
+}
+
+.toast-warning {
+    background: #f39c12;
+}
+
+.toast-error {
+    background: #e74c3c;
+}

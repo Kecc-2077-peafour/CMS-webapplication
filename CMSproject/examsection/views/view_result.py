@@ -68,7 +68,6 @@ def viewresult_view(request):
         print("Results after sorting:")
         for result in organized_results:
             print(result)
-
         context = {
             'admin_instance': admin_instance,
             'semester': semester,

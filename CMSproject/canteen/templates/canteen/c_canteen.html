@@ -129,7 +129,7 @@
                             <form method="post">
                                 {% csrf_token %}
                             <label for="quantityInput">Enter Quantity:</label>
-                            <input type="number" id="quantityInput" min="1">
+                            <input type="number" id="quantityInput" min="1" value="1">
                             <button onclick="orderItem(this)" 
                                 data-customer-id="{% if user_type == 'student' %}{{ student_instance.student_id }}{% elif user_type == 'teacher' %}{{ teacher_instance.teacher_id }}{% endif %}"
                                 data-customer-name="{% if user_type == 'student' %}{{ student_instance.name }}{% elif user_type == 'teacher' %}{{ teacher_instance.name }}{% endif %}"

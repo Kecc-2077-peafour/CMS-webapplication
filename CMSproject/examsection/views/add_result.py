@@ -83,7 +83,9 @@ def submit_result_file(request):
                     subjects_in_db = Subject.objects.values_list('name', 'full_marks')
                     subjects_in_db_names = [subject[0].lower() for subject in subjects_in_db]
                     subjects_in_file = set(element.lower() for element in data[0][2:]) 
+                    print('prachi')
                     print(subjects_in_db_names)
+                    print('prajuna')
                     print(subjects_in_file)
 
                     missing_subjects = [subject for subject in subjects_in_file if subject not in subjects_in_db_names]

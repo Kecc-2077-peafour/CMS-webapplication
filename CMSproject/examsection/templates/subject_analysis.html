@@ -66,12 +66,6 @@
             </li>
         </ul>
     </aside>
-    <div id="modal1" class="modal1" onmouseover="showModal1()" onmouseout="hideModal1()">
-        <div class="modal1-content">
-            <a onclick="handleOptionClick('student_analysis')">Student Analysis</a>
-            <a onclick="handleOptionClick('subject_analysis')">Subject Analysis</a>
-        </div>
-    </div>
     
     <!-- <div id="filterIcon" onclick="openFilterModal()">🔍 Filter</div> -->
 
@@ -118,6 +112,12 @@
             </form>
         </div>
     </div>
+    <div id="modal1" class="modal1" onmouseover="showModal1()" onmouseout="hideModal1()">
+        <div class="modal1-content">
+            <a onclick="handleOptionClick('student_analysis')">Student Analysis</a>
+            <a onclick="handleOptionClick('subject_analysis')">Subject Analysis</a>
+        </div>
+    </div>
     <!-- <div id="filter" onclick="openCourseModal()">🔍 Filter</div> -->
     <div id="courseModal" class="modal">
         <div class="modal-content">
@@ -152,32 +152,26 @@
         </div>
     </div> 
     <div class="main">
-    <h3>Student-wise Analysis</h3>
-    <table id="table-fill" class="table-fill">
-        <thead>
-            <tr>
-                <th>Roll No</th>
-                <th>Student Name</th>
-                <th>Pass Ratio</th>
-                <th>Fail Ratio</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for student_percentage in student_percentages %}
+        <h3>Subject-wise Analysis</h3>
+        <table id="table-fill" class="table-fill">
+            <thead>
+                <tr>
+                    <th>Subject Name</th>
+                    <th>Pass Ratio</th>
+                    <th>Fail Ratio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subject_percentage in subject_percentages %}
         <tr>
-            <td>{{ student_percentage.student_obj.rollNo }}</td>
-            <td>{{ student_percentage.student_obj.name }}</td>
-            <td>{{ student_percentage.pass_percentage }}%</td>
-            <td>{{ student_percentage.fail_percentage }}%</td>
+            <td>{{ subject_percentage.subject_obj.name }}</td>
+            <td>{{ subject_percentage.pass_percentage }}%</td>
+            <td>{{ subject_percentage.fail_percentage }}%</td>
         </tr>
     {% endfor %}
-            <tr>
-                <td colspan="2"><strong>Total</strong></td>
-                <td>{{ total_pass_percentage }}%</td>
-                <td>{{ total_fail_percentage }}%</td>
-            </tr>
-        </tbody>
-    </table>
+
+            </tbody>
+        </table>  
     </div>      
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>

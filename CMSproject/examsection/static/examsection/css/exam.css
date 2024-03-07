@@ -204,6 +204,36 @@ button {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
+/*this is for student analysis dropdown */
+#modal1 {
+    display: none;
+    position: fixed;
+    top: 23%;
+    left:14%; /* Adjust this value to control the vertical position */
+    z-index: 1;
+    width: 200px; /* Adjust the width as needed */
+    padding: 20px;
+    background-color: #3699ce;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal1-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styles for modal links */
+.modal1-content a {
+    padding: 8px;
+    text-decoration: none;
+    color: #f0f2f3;
+}
+
+/* Hover effect for modal links */
+.modal1-content a:hover {
+    background-color: none;
+}
 
 label {
     margin: 10px 0;
@@ -459,6 +489,9 @@ select, input {
     height: 40px;
     border-radius: 20px;
     margin: 20px auto;
+}
+#studentAnalysisDropdown {
+    display: none;
 }
 
 
