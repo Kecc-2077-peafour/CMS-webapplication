@@ -113,7 +113,8 @@ function orderItem(button) {
     console.log('customer just ordered');
     console.log(button.parentElement.parentElement.parentElement);
     currentItem=button.parentElement.parentElement.parentElement;
-    var quantity = document.getElementById("quantityInput").value;
+    var quantity = currentItem.querySelector("#quantityInput").value;
+    console.log(quantity);
     var itemName = currentItem.getElementsByClassName('itemName')[0].innerText;
     var itemImage = currentItem.parentElement.querySelector('img').src;
     var itemId = currentItem.dataset.itemId; // assuming the dataset is on the parent element

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from core.models import Student, Teacher, Admin, Order, MenuItem , Notification,OrderDetail
+from core.models import Student, Teacher, Admin, Order, MenuItem , Notification,OrderDetail,CustomUser
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
@@ -242,13 +242,22 @@ def confirm_order(request):
             print('new:old',new_status,order.status)
             order.status = new_status
             order.save()
-            customer = order.customer
-            student_notification = Notification.objects.create(
-                title="Order Confirmed",
-                content=f"Your order with ID {order.order_name.name} has been confirmed."
-            )
-            customer.notifications.add(student_notification)
+            customer_id = order.customer  # Assuming customer is the ID
+            print('this is the id of customuser',customer_id)
 
+            custom_user_instance = get_object_or_404(CustomUser, email=customer_id)
+
+            if custom_user_instance.usertype == 'student':
+                customer_instance = get_object_or_404(Student, user=custom_user_instance)
+            elif custom_user_instance.usertype == 'teacher':
+                customer_instance = get_object_or_404(Teacher, user=custom_user_instance)
+
+            student_notification = Notification.objects.create(
+                title=f"{order.order_name.name} Order Confirmed",
+                content=f"Your order with {order.order_name.name} has been confirmed."
+            )
+            customer_instance.notifications.add(student_notification)
+            customer_instance.save()
             return JsonResponse({'success': True, 'message': 'Order confirmed successfully'})
         except Order.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Order not found'})
@@ -262,12 +271,20 @@ def reject_order(request):
             order_id = data.get('order_id')
             order = get_object_or_404(Order, id=order_id)
             order.delete()
-            customer = order.customer
+            customer_id = order.customer
+            custom_user_instance = get_object_or_404(CustomUser, email=customer_id)
+
+            if custom_user_instance.usertype == 'student':
+                customer_instance = get_object_or_404(Student, user=custom_user_instance)
+            elif custom_user_instance.usertype == 'teacher':
+                customer_instance = get_object_or_404(Teacher, user=custom_user_instance)
+
             student_notification = Notification.objects.create(
-                title="Order Rejected",
+                title=f"{order.order_name.name} Order Rejected",
                 content=f"Your order with {order.order_name.name} has been rejected."
             )
-            customer.notifications.add(student_notification)
+            customer_instance.notifications.add(student_notification)
+            customer_instance.save()
 
             return JsonResponse({'success': True, 'message': 'Order rejected successfully'})
         except Order.DoesNotExist:
@@ -290,6 +307,20 @@ def completed_order(request):
                 total_amount=(order.quantity * order.order_name.price)
             )
             order_detail.save()
+            customer_id = order.customer
+            custom_user_instance = get_object_or_404(CustomUser, email=customer_id)
+
+            if custom_user_instance.usertype == 'student':
+                customer_instance = get_object_or_404(Student, user=custom_user_instance)
+            elif custom_user_instance.usertype == 'teacher':
+                customer_instance = get_object_or_404(Teacher, user=custom_user_instance)
+
+            student_notification = Notification.objects.create(
+                title=f"{order.order_name.name} Order Completed",
+                content=f"Your order with {order.order_name.name} has been completed.hope you had fun"
+            )
+            customer_instance.notifications.add(student_notification)
+            customer_instance.save()
             return JsonResponse({'success': True, 'message': 'Order status changed successfully'})
         except Order.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Order not found'})

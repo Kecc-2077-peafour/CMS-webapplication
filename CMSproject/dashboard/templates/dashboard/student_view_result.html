@@ -96,6 +96,8 @@
             {% for subject_data in result_group.subjects %}
                 <tr>
                     <td>{{ subject_data.subject_name }}</td>
+                    <td>{{ subject_data.full_marks }}</td>
+                    <td>{{ subject_data.pass_marks }}</td>
                     <td>{{ subject_data.obtained_marks }}</td>
                 </tr>
             {% endfor %}

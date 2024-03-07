@@ -94,7 +94,7 @@ class Student(models.Model):
     semester = models.PositiveSmallIntegerField(validators=[MaxValueValidator(10)])
     faculty=models.ForeignKey(Faculty, on_delete=models.DO_NOTHING)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-    notifications = models.ManyToManyField(Notification, related_name='studnet_notifications',blank=True)
+    notifications = models.ManyToManyField(Notification, related_name='student_notifications',blank=True)
 
     def __str__(self):
         return f"{self.faculty} - {self.name}-{self.semester}"

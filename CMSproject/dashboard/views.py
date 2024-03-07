@@ -105,7 +105,7 @@ def viewmyResult_view(request):
             if sem not in results_by_semester:
                 results_by_semester[sem] = {'semester': sem, 'subjects': []}
 
-            results_by_semester[sem]['subjects'].append({'subject_name': result.subject.name, 'obtained_marks': result.obtained_marks})
+            results_by_semester[sem]['subjects'].append({'subject_name': result.subject.name, 'obtained_marks': result.obtained_marks,'full_marks':result.subject.full_marks,'pass_marks':result.subject.pass_marks})
 
         # Convert the dictionary values to a list for easier iteration in the template
         organized_results = list(results_by_semester.values())
@@ -325,6 +325,10 @@ def viewResult_view(request):
             results_by_student[student_id]['subjects'].append(result)
             print(f"Result: {result}")
         organized_results = list(results_by_student.values())
+        organized_results = sorted(organized_results, key=lambda x: x['student'].rollNo)
+        print("Results after sorting:")
+        for result in organized_results:
+            print(result)
         context = {
             'teacher_instance': teacher_instance,
             'semester': semester,
