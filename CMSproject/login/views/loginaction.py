@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from core.models import Admin
-from django.contrib.auth.views import LogoutView
+from django.contrib.sessions.models import Session
+from django.views.decorators.cache import never_cache
 
 
 def login_view(request):
@@ -26,6 +27,7 @@ def loginaction(request):
             # Login the user
             login(request, user)
             request.session['user_role'] = user.usertype
+            request.session['user_id'] = user.id
             usertype = user.usertype
 
             print(f"Number of users' sessions after login: {len(request.session.keys())}")
@@ -47,13 +49,17 @@ def loginaction(request):
 
     return render(request, 'login/login.html', {'error_message': 'Invalid login credentials. Please try again.'})
 
-
-class CustomLogoutView(LogoutView):
-    def get(self, request, *args, **kwargs):
-        # Call the parent class's get method to handle the actual logout
-        response = super().get(request, *args, **kwargs)
-
-        # Custom logic after logging out
-        redirect_message = 'You are successfully logged out'
-        redirect_url = reverse('login') + f'?redirect_message={redirect_message}'
-        return redirect(redirect_url)
+@never_cache
+def logout_view(request):
+        session_key = request.session.session_key
+        if session_key is not None:
+        # Delete the session from the database
+            Session.objects.filter(session_key=session_key).delete()    
+            # Custom logic after logging out
+            redirect_message = 'You are successfully logged out'
+            redirect_url = reverse('login') + f'?redirect_message={redirect_message}'
+            response = redirect(redirect_url)
+            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevent caching
+            response['Pragma'] = 'no-cache'
+            response['Expires'] = '0'
+            return response

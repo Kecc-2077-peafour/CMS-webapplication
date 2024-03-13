@@ -101,6 +101,8 @@ def student_analysis_view(request):
         batch = params.get('batch',)
         faculty = params.get('faculty')
         exam_type = params.get('exam_type')
+        selected_option = params.get('selectedOption')
+
         query_params = {}
         if semester is not None:
             query_params['student__semester'] = semester
@@ -174,5 +176,7 @@ def student_analysis_view(request):
             'student_list': student_list,
             'subject_list': subject_list,
         }
-
-        return render(request, 'examsection/student_analysis.html', context)
+        if selected_option == 'subject_analysis':
+            return render(request, 'examsection/subject_analysis.html', context)
+        elif selected_option == 'student_analysis': 
+            return render(request, 'examsection/student_analysis.html', context)

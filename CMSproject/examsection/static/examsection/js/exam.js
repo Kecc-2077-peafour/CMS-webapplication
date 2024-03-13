@@ -105,7 +105,7 @@ function applyFilters() {
             break;
         case 'student_analysis':
             console.log(studentAnalysisUrl);
-            fetchStudnetAnalysis(formData, selectedOption);
+            fetchStudentAnalysis(formData, selectedOption);
             break;
             case 'subject_analysis':
             console.log(studentAnalysisUrl);
@@ -248,14 +248,11 @@ function fetchcourseInfo(formData) {
         });
 }
 
-function fetchstudentResult(formData, selectedOption) {
+function fetchstudentResult(formData) {
     console.log('url yo:', viewmyResultUrl);
     fetch(viewmyResultUrl, {
             method: 'POST',
-            body: ({
-                'formData': formData,
-                'selectedOption' : selectedOption,
-            }) 
+            body: formData, 
         })
         .then(response => {
             if (!response.ok) {
@@ -369,7 +366,7 @@ function fetchteacherview(formData) {
         });
 }
 
-function fetchStudnetAnalysis(formData) {
+function fetchStudentAnalysis(formData,selectedOption) {
     fetch(viewResultUrl, {
             method: 'POST',
             body: formData,
@@ -385,8 +382,9 @@ function fetchStudnetAnalysis(formData) {
         .then(data => {
             console.log(data);
             var successMessage = 'showing result of ' + data.data.exam_type + ' batch: ' + data.data.batch_number + ', sem: ' + data.data.semester + ', faculty: ' + data.data.faculty;
-            console.log(successMessage);
             let url = '/examsection/studentanalysis/?';
+            url += `selectedOption=${encodeURIComponent(selectedOption)}&`;
+            url+=`${selectedOption}`;
             if (data.data.semester) {
                 url += `semester=${data.data.semester}&`;
             }

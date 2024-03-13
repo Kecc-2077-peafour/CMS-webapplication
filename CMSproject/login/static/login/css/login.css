@@ -138,7 +138,7 @@
     text-align-last: center;
 }
 .required-msg p {
-    animation: fadeOut 7s linear forwards;
+    animation: fadeOut 4s linear forwards;
     background-color: #eeedf5;
     color: #f21818;
     width: 600px;
