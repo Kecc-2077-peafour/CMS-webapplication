@@ -24,7 +24,7 @@ secret_key.txt
 # Static files
 
 # Media files
-media/
+
 
 # Database migrations
 CMSproject/core/migrations/*.py
